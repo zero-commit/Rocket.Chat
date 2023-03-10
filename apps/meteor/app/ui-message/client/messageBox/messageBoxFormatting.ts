@@ -53,17 +53,17 @@ export const formattingButtons: ReadonlyArray<FormattingButton> = [
 		label: 'KaTeX' as TranslationKey,
 		icon: 'katex',
 		text: () => {
-			if (!settings.get('Katex_Enabled')) {
+			if (!settings.get<boolean>('Katex_Enabled')) {
 				return;
 			}
-			if (settings.get('Katex_Dollar_Syntax')) {
+			if (settings.get<boolean>('Katex_Dollar_Syntax')) {
 				return '$$KaTeX$$';
 			}
-			if (settings.get('Katex_Parenthesis_Syntax')) {
+			if (settings.get<boolean>('Katex_Parenthesis_Syntax')) {
 				return '\\[KaTeX\\]';
 			}
 		},
 		link: 'https://khan.github.io/KaTeX/function-support.html',
-		condition: () => settings.get('Katex_Enabled'),
+		condition: () => settings.get<boolean>('Katex_Enabled') ?? false,
 	},
 ] as const;

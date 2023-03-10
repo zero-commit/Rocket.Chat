@@ -10,7 +10,7 @@ const dayFormat = ['h:mm A', 'H:mm'];
 
 export const formatTime = (time: MomentInput): string => {
 	const clockMode = Tracker.nonreactive(() => getUserPreference(Meteor.userId(), 'clockMode', false) as number | boolean);
-	const messageTimeFormat = Tracker.nonreactive(() => settings.get('Message_TimeFormat'));
+	const messageTimeFormat = Tracker.nonreactive(() => settings.get<string>('Message_TimeFormat'));
 
 	switch (clockMode) {
 		case 1:

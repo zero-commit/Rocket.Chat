@@ -8,7 +8,7 @@ import { getUserPreference } from '../../../app/utils/lib/getUserPreference';
 
 export const formatDateAndTime = (time: MomentInput): string => {
 	const clockMode = Tracker.nonreactive(() => getUserPreference(Meteor.userId(), 'clockMode', false) as number | boolean);
-	const messageTimeAndDateFormat = Tracker.nonreactive(() => settings.get('Message_TimeAndDateFormat'));
+	const messageTimeAndDateFormat = Tracker.nonreactive(() => settings.get<string>('Message_TimeAndDateFormat'));
 
 	switch (clockMode) {
 		case 1:

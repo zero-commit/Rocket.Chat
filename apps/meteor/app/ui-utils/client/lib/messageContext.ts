@@ -69,10 +69,10 @@ export const createMessageContext = ({
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	API_Embed = settings.get('API_Embed'),
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	Message_GroupingPeriod = settings.get('Message_GroupingPeriod') * 1000,
+	Message_GroupingPeriod = (settings.get<number>('Message_GroupingPeriod') ?? 0) * 1000,
 }: {
 	uid?: IUser['_id'] | null;
-	user?: Pick<IUser, '_id' | 'settings'>;
+	user?: Pick<IUser, '_id' | 'name' | 'username' | 'settings'>;
 	rid?: IRoom['_id'];
 	room?: Omit<IRoom, '_updatedAt' | 'lastMessage'>;
 	subscription?: Pick<ISubscription, 'name' | 'autoTranslate' | 'rid' | 'tunread' | 'tunreadUser' | 'tunreadGroup'>;

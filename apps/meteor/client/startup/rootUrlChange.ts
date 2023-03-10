@@ -25,7 +25,7 @@ Meteor.startup(() => {
 			return c.stop();
 		}
 
-		const siteUrl = settings.get('Site_Url');
+		const siteUrl = settings.get<string>('Site_Url');
 		if (!siteUrl) {
 			return;
 		}
@@ -49,7 +49,7 @@ Meteor.startup(() => {
 			});
 		}
 
-		const documentDomain = settings.get('Document_Domain');
+		const documentDomain = settings.get<string>('Document_Domain') ?? '';
 		if (documentDomain) {
 			window.document.domain = documentDomain;
 		}

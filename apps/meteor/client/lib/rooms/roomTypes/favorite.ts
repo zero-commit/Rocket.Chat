@@ -9,6 +9,6 @@ export const FavoriteRoomType = getFavoriteRoomType(roomCoordinator);
 
 roomCoordinator.add(FavoriteRoomType, {
 	condition(): boolean {
-		return settings.get('Favorite_Rooms') && getUserPreference(Meteor.userId(), 'sidebarShowFavorites');
+		return (settings.get<boolean>('Favorite_Rooms') ?? false) && getUserPreference(Meteor.userId(), 'sidebarShowFavorites', false);
 	},
 });

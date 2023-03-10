@@ -6,7 +6,7 @@ import { callbacks } from '../../../lib/callbacks';
 
 Meteor.startup(() => {
 	Tracker.autorun(() => {
-		const isEnabled = settings.get('Katex_Enabled');
+		const isEnabled = settings.get<boolean>('Katex_Enabled') ?? false;
 
 		if (!isEnabled) {
 			callbacks.remove('renderMessage', 'katex');
@@ -14,8 +14,8 @@ Meteor.startup(() => {
 		}
 
 		const options = {
-			dollarSyntax: settings.get('Katex_Dollar_Syntax'),
-			parenthesisSyntax: settings.get('Katex_Parenthesis_Syntax'),
+			dollarSyntax: settings.get<boolean>('Katex_Dollar_Syntax') ?? false,
+			parenthesisSyntax: settings.get<boolean>('Katex_Parenthesis_Syntax') ?? false,
 		};
 
 		import('../../../app/katex/client').then(({ createKatexMessageRendering }) => {

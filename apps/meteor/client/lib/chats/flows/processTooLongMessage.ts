@@ -8,7 +8,7 @@ import { dispatchToastMessage } from '../../toast';
 import type { ChatAPI } from '../ChatAPI';
 
 export const processTooLongMessage = async (chat: ChatAPI, { msg }: Pick<IMessage, 'msg'>): Promise<boolean> => {
-	const maxAllowedSize = settings.get('Message_MaxAllowedSize');
+	const maxAllowedSize = settings.get<number>('Message_MaxAllowedSize') ?? 0;
 
 	if (msg.length <= maxAllowedSize) {
 		return false;
