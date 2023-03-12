@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { Tracker } from 'meteor/tracker';
 
 import { userStatus } from '../../app/user-status/client/lib/userStatus';
+import { call } from '../lib/utils/call';
 
 Meteor.startup(() => {
 	Tracker.autorun(() => {
@@ -10,11 +11,7 @@ Meteor.startup(() => {
 			return;
 		}
 
-		Meteor.call('listCustomUserStatus', (_error: Error | undefined, result: ICustomUserStatus[] | undefined) => {
-			if (!result) {
-				return;
-			}
-
+		call('listCustomUserStatus').then((result: ICustomUserStatus[]) => {
 			for (const customStatus of result) {
 				const newUserStatus = {
 					name: customStatus.name,

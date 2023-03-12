@@ -6,6 +6,7 @@ import { messageToolboxActions } from '../../../app/ui-utils/client';
 import { queryClient } from '../../lib/queryClient';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { dispatchToastMessage } from '../../lib/toast';
+import { call } from '../../lib/utils/call';
 import { messageArgs } from '../../lib/utils/messageArgs';
 
 Meteor.startup(() => {
@@ -14,16 +15,14 @@ Meteor.startup(() => {
 		icon: 'star',
 		label: 'Star',
 		context: ['starred', 'message', 'message-mobile', 'threads', 'federated'],
-		action(_, props) {
+		async action(_, props) {
 			const { message = messageArgs(this).msg } = props;
-			Meteor.call('starMessage', { ...message, starred: true }, (error: Error) => {
-				if (error) {
-					dispatchToastMessage({ type: 'error', message: error });
-					return;
-				}
-
+			try {
+				await call('starMessage', { ...message, starred: true });
 				queryClient.invalidateQueries(['rooms', message.rid, 'starred-messages']);
-			});
+			} catch (error) {
+				dispatchToastMessage({ type: 'error', message: error });
+			}
 		},
 		condition({ message, subscription, user, room }) {
 			if (subscription == null && settings.get('Message_AllowStarring')) {

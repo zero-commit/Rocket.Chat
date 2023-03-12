@@ -10,9 +10,10 @@ export enum SettingEditor {
 	EXPRESSION = 'expression',
 }
 type AssetValue = { defaultUrl?: string };
+type RoomPickValue = { _id: string; name: string }[];
 export type SettingValueMultiSelect = (string | number)[];
 export type SettingValueRoomPick = Array<{ _id: string; name: string }> | string;
-export type SettingValue = string | boolean | number | SettingValueMultiSelect | Date | AssetValue | undefined | null;
+export type SettingValue = string | boolean | number | SettingValueMultiSelect | Date | AssetValue | RoomPickValue | undefined | null;
 
 export interface ISettingSelectOption {
 	key: string | number;

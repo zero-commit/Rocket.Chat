@@ -61,6 +61,10 @@ const CloudPage = (): ReactNode => {
 			}
 
 			try {
+				if (!code || !state) {
+					throw Error('An error occured authenticating');
+				}
+
 				await finishOAuthAuthorization(code, state);
 			} catch (error) {
 				dispatchToastMessage({ type: 'error', message: error });

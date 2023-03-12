@@ -1,24 +1,25 @@
-import type { IRocketChatRecord, IRole, IUser } from '@rocket.chat/core-typings';
+import type { IRole, IUser } from '@rocket.chat/core-typings';
 import { Meteor } from 'meteor/meteor';
 import { Tracker } from 'meteor/tracker';
 
 import { UserRoles, ChatMessage } from '../../app/models/client';
 import { Notifications } from '../../app/notifications/client';
 import { dispatchToastMessage } from '../lib/toast';
+import { call } from '../lib/utils/call';
 
 Meteor.startup(() => {
 	Tracker.autorun(() => {
 		if (Meteor.userId()) {
-			Meteor.call('getUserRoles', (error: Error, results: IRocketChatRecord[]) => {
-				if (error) {
+			call('getUserRoles').then(
+				(results) => {
+					for (const record of results) {
+						UserRoles.upsert({ _id: record._id }, record);
+					}
+				},
+				(error) => {
 					dispatchToastMessage({ type: 'error', message: error });
-					return;
-				}
-
-				for (const record of results) {
-					UserRoles.upsert({ _id: record._id }, record);
-				}
-			});
+				},
+			);
 
 			Notifications.onLogged(
 				'roles-change',

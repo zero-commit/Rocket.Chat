@@ -9,6 +9,7 @@ import UrlChangeModal from '../components/UrlChangeModal';
 import { imperativeModal } from '../lib/imperativeModal';
 import { dispatchToastMessage } from '../lib/toast';
 import { isSyncReady } from '../lib/userData';
+import { call } from '../lib/utils/call';
 
 Meteor.startup(() => {
 	Tracker.autorun((c) => {
@@ -32,11 +33,14 @@ Meteor.startup(() => {
 
 		const currentUrl = location.origin + window.__meteor_runtime_config__.ROOT_URL_PATH_PREFIX;
 		if (window.__meteor_runtime_config__.ROOT_URL.replace(/\/$/, '') !== currentUrl) {
-			const confirm = (): void => {
+			const confirm = async () => {
 				imperativeModal.close();
-				Meteor.call('saveSetting', 'Site_Url', currentUrl, () => {
+				try {
+					await call('saveSetting', 'Site_Url', currentUrl);
 					dispatchToastMessage({ type: 'success', message: t('Saved') });
-				});
+				} catch (error) {
+					dispatchToastMessage({ type: 'error', message: error });
+				}
 			};
 			imperativeModal.open({
 				component: UrlChangeModal,

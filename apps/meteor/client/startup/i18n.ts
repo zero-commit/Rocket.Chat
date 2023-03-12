@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import { Users } from '../../app/models/client';
 import { settings } from '../../app/settings/client';
+import { call } from '../lib/utils/call';
 import { filterLanguage } from '../lib/utils/filterLanguage';
 import { isRTLScriptLanguage } from '../lib/utils/isRTLScriptLanguage';
 
@@ -19,23 +20,15 @@ Meteor.startup(() => {
 
 	const getBrowserLanguage = (): string => filterLanguage(window.navigator.userLanguage ?? window.navigator.language);
 
-	const loadMomentLocale = (language: string): Promise<string> =>
-		new Promise((resolve, reject) => {
-			if (moment.locales().includes(language.toLowerCase())) {
-				resolve(language);
-				return;
-			}
+	const loadMomentLocale = async (language: string): Promise<string> => {
+		if (moment.locales().includes(language.toLowerCase())) {
+			return language;
+		}
 
-			Meteor.call('loadLocale', language, (error: unknown, localeSrc: string) => {
-				if (error) {
-					reject(error);
-					return;
-				}
-
-				Function(localeSrc).call({ moment });
-				resolve(language);
-			});
-		});
+		const localeSrc = await call('loadLocale', language);
+		Function(localeSrc).call({ moment });
+		return language;
+	};
 
 	const applyLanguage = (language: string | undefined = 'en'): void => {
 		language = filterLanguage(language);

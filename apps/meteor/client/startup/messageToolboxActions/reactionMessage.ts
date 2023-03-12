@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { EmojiPicker } from '../../../app/emoji/client';
 import { messageToolboxActions } from '../../../app/ui-utils/client';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
+import { call } from '../../lib/utils/call';
 import { messageArgs } from '../../lib/utils/messageArgs';
 
 Meteor.startup(() => {
@@ -13,7 +14,7 @@ Meteor.startup(() => {
 		context: ['message', 'message-mobile', 'threads', 'federated'],
 		action(this: unknown, event, { message = messageArgs(this).msg }) {
 			event.stopPropagation();
-			EmojiPicker.open(event.currentTarget, (emoji) => Meteor.call('setReaction', `:${emoji}:`, message._id));
+			EmojiPicker.open(event.currentTarget, (emoji) => call('setReaction', `:${emoji}:`, message._id));
 		},
 		condition({ message, user, room, subscription }) {
 			if (!user) {

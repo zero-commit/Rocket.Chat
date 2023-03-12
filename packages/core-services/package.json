@@ -31,5 +31,8 @@
 		"@rocket.chat/ui-kit": "next",
 		"@types/fibers": "^3.1.1",
 		"fibers": "^5.0.3"
+	},
+	"volta": {
+		"extends": "../../package.json"
 	}
 }

@@ -1,15 +1,14 @@
-import type { ICustomSound } from '@rocket.chat/core-typings';
 import { Meteor } from 'meteor/meteor';
 
 import { CustomSounds } from '../../app/custom-sounds/client/lib/CustomSounds';
 import { CachedCollectionManager } from '../../app/ui-cached-collection/client';
+import { call } from '../lib/utils/call';
 
 Meteor.startup(() =>
-	CachedCollectionManager.onLogin(() => {
-		Meteor.call('listCustomSounds', (_error?: Error, result?: ICustomSound[]) => {
-			for (const sound of result ?? []) {
-				CustomSounds.add(sound);
-			}
-		});
+	CachedCollectionManager.onLogin(async () => {
+		const result = await call('listCustomSounds');
+		for (const sound of result) {
+			CustomSounds.add(sound);
+		}
 	}),
 );

@@ -1,9 +1,9 @@
 import { Mongo } from 'meteor/mongo';
-import type { IRocketChatRecord, IRole } from '@rocket.chat/core-typings';
+import type { IRole } from '@rocket.chat/core-typings';
 
 /** @deprecated */
-export const UserRoles = new Mongo.Collection<
-	IRocketChatRecord & {
-		roles?: IRole['_id'][];
-	}
->(null);
+export const UserRoles = new Mongo.Collection<{
+	_id: string;
+	_updatedAt?: Date;
+	roles?: IRole['_id'][];
+}>(null);

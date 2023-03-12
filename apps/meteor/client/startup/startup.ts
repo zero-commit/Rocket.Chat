@@ -13,6 +13,7 @@ import { getUserPreference, t } from '../../app/utils/client';
 import 'hljs9/styles/github.css';
 import * as banners from '../lib/banners';
 import { synchronizeUserData, removeLocalUserData } from '../lib/userData';
+import { call } from '../lib/utils/call';
 import { fireGlobalEvent } from '../lib/utils/fireGlobalEvent';
 
 Meteor.startup(() => {
@@ -43,7 +44,7 @@ Meteor.startup(() => {
 
 		const utcOffset = moment().utcOffset() / 60;
 		if (user.utcOffset !== utcOffset) {
-			Meteor.call('userSetUtcOffset', utcOffset);
+			call('userSetUtcOffset', utcOffset);
 		}
 
 		if (getUserPreference(user, 'enableAutoAway')) {
@@ -72,12 +73,8 @@ Meteor.startup(() => {
 			return;
 		}
 
-		Meteor.call('cloud:checkRegisterStatus', (err: unknown, data: { connectToCloud?: boolean; workspaceRegistered?: boolean }) => {
-			if (err) {
-				console.log(err);
-				return;
-			}
-
+		try {
+			const data = await call('cloud:checkRegisterStatus');
 			c.stop();
 			const { connectToCloud = false, workspaceRegistered = false } = data;
 			if (connectToCloud === true && workspaceRegistered !== true) {
@@ -88,7 +85,9 @@ Meteor.startup(() => {
 					modifiers: ['large', 'danger'],
 				});
 			}
-		});
+		} catch (err) {
+			console.log(err);
+		}
 	});
 });
 Meteor.startup(() => {

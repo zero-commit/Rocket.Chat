@@ -1,10 +1,18 @@
 import { Meteor } from 'meteor/meteor';
+import type { IMessage } from '@rocket.chat/core-typings';
 
 import logger from './logger';
 import { Messages, Subscriptions } from '../../models/server';
 
+declare module '@rocket.chat/ui-contexts' {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	interface ServerMethods {
+		unreadMessages: (firstUnreadMessage?: Pick<IMessage, '_id' | 'ts'> | null, room?: string) => void;
+	}
+}
+
 Meteor.methods({
-	unreadMessages(firstUnreadMessage, room) {
+	unreadMessages(firstUnreadMessage?: Pick<IMessage, '_id' | 'ts'> | null, room?: string) {
 		const userId = Meteor.userId();
 		if (!userId) {
 			throw new Meteor.Error('error-invalid-user', 'Invalid user', {

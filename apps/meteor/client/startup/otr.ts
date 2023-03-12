@@ -8,6 +8,7 @@ import { OtrRoomState } from '../../app/otr/lib/OtrRoomState';
 import { t } from '../../app/utils/client';
 import { onClientBeforeSendMessage } from '../lib/onClientBeforeSendMessage';
 import { onClientMessageReceived } from '../lib/onClientMessageReceived';
+import { call } from '../lib/utils/call';
 
 type NotifyUserData = {
 	roomId: IRoom['_id'];
@@ -71,7 +72,7 @@ Meteor.startup(() => {
 			} else if (userId !== Meteor.userId()) {
 				const encryptedAck = await instanceByRoomId.encryptText(ack);
 
-				Meteor.call('updateOTRAck', { message, ack: encryptedAck });
+				call('updateOTRAck', { message, ack: encryptedAck });
 			}
 
 			return { ...message, _id, msg };
