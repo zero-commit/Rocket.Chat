@@ -8,7 +8,7 @@ import { settings } from '../../app/settings/client';
 Meteor.startup(() => {
 	Tracker.autorun(() => {
 		const userId = Meteor.userId();
-		const setupWizardState = settings.get('Show_Setup_Wizard');
+		const setupWizardState = settings.get<'pending' | 'in_progress' | 'completed'>('Show_Setup_Wizard');
 
 		const isWizardInProgress = userId && hasRole(userId, 'admin') && setupWizardState === 'in_progress';
 		const mustRedirect = (!userId && setupWizardState === 'pending') || isWizardInProgress;

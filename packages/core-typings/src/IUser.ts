@@ -159,6 +159,18 @@ export interface IUser extends IRocketChatRecord {
 		avatarUrl?: string;
 		searchedServerNames?: string[];
 	};
+	banners?: {
+		[key: string]: {
+			id: string;
+			priority: number;
+			title: string;
+			text: string;
+			textArguments?: string[];
+			modifiers: ('large' | 'danger')[];
+			link: string;
+			read?: boolean;
+		};
+	};
 }
 
 export interface IRegisterUser extends IUser {
