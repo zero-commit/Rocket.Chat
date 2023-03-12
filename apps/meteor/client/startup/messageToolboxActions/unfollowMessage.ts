@@ -4,16 +4,16 @@ import { Tracker } from 'meteor/tracker';
 
 import { Messages } from '../../../app/models/client';
 import { settings } from '../../../app/settings/client';
-import { MessageAction } from '../../../app/ui-utils/client';
+import { messageToolboxActions } from '../../../app/ui-utils/client';
 import { dispatchToastMessage } from '../../lib/toast';
 import { callWithErrorHandling } from '../../lib/utils/callWithErrorHandling';
 
 Meteor.startup(() => {
 	Tracker.autorun(() => {
 		if (!settings.get('Threads_enabled')) {
-			return MessageAction.removeButton('unfollow-message');
+			return messageToolboxActions.remove('unfollow-message');
 		}
-		MessageAction.addButton({
+		messageToolboxActions.add({
 			id: 'unfollow-message',
 			icon: 'bell-off',
 			label: 'Unfollow_message',

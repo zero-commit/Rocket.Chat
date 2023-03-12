@@ -2,14 +2,14 @@ import type { IUser } from '@rocket.chat/core-typings';
 import { Meteor } from 'meteor/meteor';
 
 import { settings } from '../../../app/settings/client';
-import { MessageAction } from '../../../app/ui-utils/client';
+import { messageToolboxActions } from '../../../app/ui-utils/client';
 import { queryClient } from '../../lib/queryClient';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { dispatchToastMessage } from '../../lib/toast';
 import { messageArgs } from '../../lib/utils/messageArgs';
 
 Meteor.startup(() => {
-	MessageAction.addButton({
+	messageToolboxActions.add({
 		id: 'star-message',
 		icon: 'star',
 		label: 'Star',

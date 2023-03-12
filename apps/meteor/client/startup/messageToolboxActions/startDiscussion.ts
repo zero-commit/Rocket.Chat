@@ -3,7 +3,7 @@ import { Tracker } from 'meteor/tracker';
 
 import { hasPermission } from '../../../app/authorization/client';
 import { settings } from '../../../app/settings/client';
-import { MessageAction } from '../../../app/ui-utils/client/lib/MessageAction';
+import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
 import CreateDiscussion from '../../components/CreateDiscussion/CreateDiscussion';
 import { imperativeModal } from '../../lib/imperativeModal';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
@@ -12,10 +12,10 @@ import { messageArgs } from '../../lib/utils/messageArgs';
 Meteor.startup(() => {
 	Tracker.autorun(() => {
 		if (!settings.get('Discussion_enabled')) {
-			return MessageAction.removeButton('start-discussion');
+			return messageToolboxActions.remove('start-discussion');
 		}
 
-		MessageAction.addButton({
+		messageToolboxActions.add({
 			id: 'start-discussion',
 			icon: 'discussion',
 			label: 'Discussion_start',

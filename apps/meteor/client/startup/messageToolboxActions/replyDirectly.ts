@@ -3,12 +3,12 @@ import { Meteor } from 'meteor/meteor';
 
 import { hasPermission } from '../../../app/authorization/client';
 import { Rooms, Subscriptions } from '../../../app/models/client';
-import { MessageAction } from '../../../app/ui-utils/client/lib/MessageAction';
+import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { messageArgs } from '../../lib/utils/messageArgs';
 
 Meteor.startup(() => {
-	MessageAction.addButton({
+	messageToolboxActions.add({
 		id: 'reply-directly',
 		icon: 'reply-directly',
 		label: 'Reply_in_direct_message',

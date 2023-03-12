@@ -1,5 +1,5 @@
 export { AccountBox } from './lib/AccountBox';
-export { MessageAction } from './lib/MessageAction';
+export { messageToolboxActions } from './lib/MessageToolboxActions';
 export { messageBox } from './lib/messageBox';
 export { readMessage } from './lib/readMessages';
 export { RoomManager } from './lib/RoomManager';

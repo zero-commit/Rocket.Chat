@@ -1,7 +1,7 @@
 import type { IUIActionButton } from '@rocket.chat/apps-engine/definition/ui';
 
 import { Utilities } from '../../../../ee/lib/misc/Utilities';
-import { MessageAction } from '../../../ui-utils/client';
+import { messageToolboxActions } from '../../../ui-utils/client';
 import { messageArgs } from '../../../../client/lib/utils/messageArgs';
 import { t } from '../../../utils/client';
 import { triggerActionButtonAction } from '../ActionManager';
@@ -11,7 +11,7 @@ const getIdForActionButton = ({ appId, actionId }: IUIActionButton): string => `
 
 // eslint-disable-next-line no-void
 export const onAdded = (button: IUIActionButton): void =>
-	MessageAction.addButton({
+	messageToolboxActions.add({
 		id: getIdForActionButton(button),
 		icon: '' as any,
 		label: t(Utilities.getI18nKeyForApp(button.labelI18n, button.appId)) as any,
@@ -31,4 +31,4 @@ export const onAdded = (button: IUIActionButton): void =>
 		},
 	});
 
-export const onRemoved = (button: IUIActionButton): void => MessageAction.removeButton(getIdForActionButton(button));
+export const onRemoved = (button: IUIActionButton): void => messageToolboxActions.remove(getIdForActionButton(button));

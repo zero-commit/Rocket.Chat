@@ -6,7 +6,7 @@ import { hasAtLeastOnePermission } from '../../../app/authorization/client';
 import { AutoTranslate } from '../../../app/autotranslate/client/lib/autotranslate';
 import { Messages } from '../../../app/models/client';
 import { settings } from '../../../app/settings/client';
-import { MessageAction } from '../../../app/ui-utils/client/lib/MessageAction';
+import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { messageArgs } from '../../lib/utils/messageArgs';
 import { hasTranslationLanguageInAttachments, hasTranslationLanguageInMessage } from '../../views/room/MessageList/lib/autoTranslate';
@@ -16,7 +16,7 @@ Meteor.startup(() => {
 
 	Tracker.autorun(() => {
 		if (settings.get('AutoTranslate_Enabled') && hasAtLeastOnePermission(['auto-translate'])) {
-			MessageAction.addButton({
+			messageToolboxActions.add({
 				id: 'translate',
 				icon: 'language',
 				label: 'Translate',
@@ -49,7 +49,7 @@ Meteor.startup(() => {
 				},
 				order: 90,
 			});
-			MessageAction.addButton({
+			messageToolboxActions.add({
 				id: 'view-original',
 				icon: 'language',
 				label: 'View_original',
@@ -83,7 +83,7 @@ Meteor.startup(() => {
 				order: 90,
 			});
 		} else {
-			MessageAction.removeButton('toggle-language');
+			messageToolboxActions.remove('toggle-language');
 		}
 	});
 });

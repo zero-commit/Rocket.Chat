@@ -8,7 +8,7 @@ import React, { useCallback } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import { MessageTypes } from '../../../../../app/ui-utils/client';
-import type { MessageActionContext } from '../../../../../app/ui-utils/client/lib/MessageAction';
+import type { MessageToolboxActionContext } from '../../../../../app/ui-utils/client/lib/MessageToolboxActions';
 import ScrollableContentWrapper from '../../../../components/ScrollableContentWrapper';
 import VerticalBarClose from '../../../../components/VerticalBar/VerticalBarClose';
 import VerticalBarContent from '../../../../components/VerticalBar/VerticalBarContent';
@@ -29,7 +29,7 @@ type MessageListTabProps = {
 	iconName: ComponentProps<typeof Icon>['name'];
 	title: ReactNode;
 	emptyResultMessage: ReactNode;
-	context: MessageActionContext;
+	context: MessageToolboxActionContext;
 	queryResult: UseQueryResult<IMessage[]>;
 };
 

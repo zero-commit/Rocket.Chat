@@ -4,7 +4,7 @@ import { Tracker } from 'meteor/tracker';
 
 import { Messages } from '../../../app/models/client';
 import { settings } from '../../../app/settings/client';
-import { MessageAction } from '../../../app/ui-utils/client';
+import { messageToolboxActions } from '../../../app/ui-utils/client';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { dispatchToastMessage } from '../../lib/toast';
 import { callWithErrorHandling } from '../../lib/utils/callWithErrorHandling';
@@ -12,9 +12,9 @@ import { callWithErrorHandling } from '../../lib/utils/callWithErrorHandling';
 Meteor.startup(() => {
 	Tracker.autorun(() => {
 		if (!settings.get('Threads_enabled')) {
-			return MessageAction.removeButton('follow-message');
+			return messageToolboxActions.remove('follow-message');
 		}
-		MessageAction.addButton({
+		messageToolboxActions.add({
 			id: 'follow-message',
 			icon: 'bell',
 			label: 'Follow_message',

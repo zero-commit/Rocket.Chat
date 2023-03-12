@@ -6,15 +6,15 @@ import { useQuery } from '@tanstack/react-query';
 import type { ReactElement } from 'react';
 import React, { memo, useMemo } from 'react';
 
-import type { MessageActionContext } from '../../../../app/ui-utils/client/lib/MessageAction';
-import { MessageAction } from '../../../../app/ui-utils/client/lib/MessageAction';
+import type { MessageToolboxActionContext } from '../../../../app/ui-utils/client/lib/MessageToolboxActions';
+import { messageToolboxActions } from '../../../../app/ui-utils/client/lib/MessageToolboxActions';
 import { useIsSelecting } from '../../../views/room/MessageList/contexts/SelectedMessagesContext';
 import { useAutoTranslate } from '../../../views/room/MessageList/hooks/useAutoTranslate';
 import { useChat } from '../../../views/room/contexts/ChatContext';
 import { useToolboxContext } from '../../../views/room/contexts/ToolboxContext';
 import MessageActionMenu from './MessageActionMenu';
 
-const getMessageContext = (message: IMessage, room: IRoom, context?: MessageActionContext): MessageActionContext => {
+const getMessageContext = (message: IMessage, room: IRoom, context?: MessageToolboxActionContext): MessageToolboxActionContext => {
 	if (context) {
 		return context;
 	}
@@ -36,7 +36,7 @@ const getMessageContext = (message: IMessage, room: IRoom, context?: MessageActi
 
 type ToolboxProps = {
 	message: IMessage & Partial<ITranslatedMessage>;
-	messageContext?: MessageActionContext;
+	messageContext?: MessageToolboxActionContext;
 	room: IRoom;
 	subscription?: ISubscription;
 };
@@ -54,12 +54,12 @@ const Toolbox = ({ message, messageContext, room, subscription }: ToolboxProps):
 	const chat = useChat();
 
 	const actionsQueryResult = useQuery(['rooms', room._id, 'messages', message._id, 'actions'] as const, async () => {
-		const messageActions = await MessageAction.getButtons(
+		const messageActions = await messageToolboxActions.get(
 			{ message, room, user: user ?? undefined, subscription, settings: mapSettings, chat },
 			context,
 			'message',
 		);
-		const menuActions = await MessageAction.getButtons(
+		const menuActions = await messageToolboxActions.get(
 			{ message, room, user: user ?? undefined, subscription, settings: mapSettings, chat },
 			context,
 			'menu',

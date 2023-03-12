@@ -1,12 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 
 import { settings } from '../../../app/settings/client';
-import { MessageAction } from '../../../app/ui-utils/client';
+import { messageToolboxActions } from '../../../app/ui-utils/client';
 import { messageArgs } from '../../lib/utils/messageArgs';
 import { setMessageJumpQueryStringParameter } from '../../lib/utils/setMessageJumpQueryStringParameter';
 
 Meteor.startup(() => {
-	MessageAction.addButton({
+	messageToolboxActions.add({
 		id: 'jump-to-star-message',
 		icon: 'jump',
 		label: 'Jump_to_message',

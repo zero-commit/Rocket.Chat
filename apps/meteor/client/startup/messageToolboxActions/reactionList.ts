@@ -1,12 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 
-import { MessageAction } from '../../../app/ui-utils/client/lib/MessageAction';
+import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
 import { imperativeModal } from '../../lib/imperativeModal';
 import { messageArgs } from '../../lib/utils/messageArgs';
 import ReactionList from '../../views/room/modals/ReactionListModal';
 
 Meteor.startup(() => {
-	MessageAction.addButton({
+	messageToolboxActions.add({
 		id: 'reaction-list',
 		icon: 'emoji',
 		label: 'Reactions',

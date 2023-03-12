@@ -4,14 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import type { ReactElement } from 'react';
 import React, { memo, useRef } from 'react';
 
-import type { MessageActionContext } from '../../../app/ui-utils/client/lib/MessageAction';
+import type { MessageToolboxActionContext } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
 import { useChat } from '../../views/room/contexts/ChatContext';
 import { useIsVisible } from '../../views/room/hooks/useIsVisible';
 import Toolbox from './toolbox/Toolbox';
 
 type ToolboxHolderProps = {
 	message: IMessage;
-	context?: MessageActionContext;
+	context?: MessageToolboxActionContext;
 };
 
 export const ToolboxHolder = ({ message, context }: ToolboxHolderProps): ReactElement => {

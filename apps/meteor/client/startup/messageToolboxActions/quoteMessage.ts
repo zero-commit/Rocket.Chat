@@ -1,10 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 
-import { MessageAction } from '../../../app/ui-utils/client/lib/MessageAction';
+import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
 import { messageArgs } from '../../lib/utils/messageArgs';
 
 Meteor.startup(() => {
-	MessageAction.addButton({
+	messageToolboxActions.add({
 		id: 'quote-message',
 		icon: 'quote',
 		label: 'Quote',

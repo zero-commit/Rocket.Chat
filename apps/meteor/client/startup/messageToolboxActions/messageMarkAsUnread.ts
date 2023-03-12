@@ -2,13 +2,13 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Meteor } from 'meteor/meteor';
 
 import { ChatSubscription } from '../../../app/models/client';
-import { RoomManager, MessageAction } from '../../../app/ui-utils/client';
+import { RoomManager, messageToolboxActions } from '../../../app/ui-utils/client';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { dispatchToastMessage } from '../../lib/toast';
 import { messageArgs } from '../../lib/utils/messageArgs';
 
 Meteor.startup(() => {
-	MessageAction.addButton({
+	messageToolboxActions.add({
 		id: 'mark-message-as-unread',
 		icon: 'flag',
 		label: 'Mark_unread',

@@ -5,13 +5,25 @@ import moment from 'moment';
 import { hasAtLeastOnePermission, hasPermission } from '../../../app/authorization/client';
 import { Messages, ChatRoom, ChatSubscription } from '../../../app/models/client';
 import { settings } from '../../../app/settings/client';
-import { readMessage, MessageTypes } from '../../../app/ui-utils/client';
+import { readMessage, MessageTypes, messageToolboxActions } from '../../../app/ui-utils/client';
 import { onClientBeforeSendMessage } from '../onClientBeforeSendMessage';
 import { call } from '../utils/call';
-import { prependReplies } from '../utils/prependReplies';
 import type { DataAPI } from './ChatAPI';
 
 export const createDataAPI = ({ rid, tmid }: { rid: IRoom['_id']; tmid: IMessage['_id'] | undefined }): DataAPI => {
+	const prependReplies = async (msg: string, replies: IMessage[] = []): Promise<string> => {
+		const chunks = await Promise.all(
+			replies.map(async ({ _id }) => {
+				const permalink = await messageToolboxActions.getPermaLink(_id);
+
+				return `[ ](${permalink})`;
+			}),
+		);
+
+		chunks.push(msg);
+		return chunks.join('\n');
+	};
+
 	const composeMessage = async (
 		text: string,
 		{ sendToChannel, quotedMessages, originalMessage }: { sendToChannel?: boolean; quotedMessages: IMessage[]; originalMessage?: IMessage },
@@ -288,7 +300,7 @@ export const createDataAPI = ({ rid, tmid }: { rid: IRoom['_id']; tmid: IMessage
 	const getSubscription = createStrictGetter(findSubscription, 'Subscription not found');
 
 	const findSubscriptionFromMessage = async (message: IMessage): Promise<ISubscription | undefined> => {
-		return ChatSubscription.findOne({ rid: message.rid }, { reactive: false });
+		return ChatSubscription.findOne({ 'rid': message.rid, 'u._id': Meteor.userId() }, { reactive: false });
 	};
 
 	const getSubscriptionFromMessage = createStrictGetter(findSubscriptionFromMessage, 'Subscription not found');
@@ -324,5 +336,6 @@ export const createDataAPI = ({ rid, tmid }: { rid: IRoom['_id']; tmid: IMessage
 		getSubscription,
 		findSubscriptionFromMessage,
 		getSubscriptionFromMessage,
+		prependReplies,
 	};
 };

@@ -2,40 +2,36 @@ import { Meteor } from 'meteor/meteor';
 
 import { hasAtLeastOnePermission } from '../../../app/authorization/client';
 import { settings } from '../../../app/settings/client';
-import { MessageAction } from '../../../app/ui-utils/client';
+import { messageToolboxActions } from '../../../app/ui-utils/client';
 import { queryClient } from '../../lib/queryClient';
-import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { dispatchToastMessage } from '../../lib/toast';
 import { call } from '../../lib/utils/call';
 import { messageArgs } from '../../lib/utils/messageArgs';
 
 Meteor.startup(() => {
-	MessageAction.addButton({
-		id: 'pin-message',
+	messageToolboxActions.add({
+		id: 'unpin-message',
 		icon: 'pin',
-		label: 'Pin',
+		label: 'Unpin',
 		context: ['pinned', 'message', 'message-mobile', 'threads', 'direct'],
 		async action(_, props) {
 			const { message = messageArgs(this).msg } = props;
-			message.pinned = true;
+			message.pinned = false;
 			try {
-				await call('pinMessage', message);
+				await call('unpinMessage', message);
 				queryClient.invalidateQueries(['rooms', message.rid, 'pinned-messages']);
 			} catch (error) {
 				dispatchToastMessage({ type: 'error', message: error });
 			}
 		},
-		condition({ message, subscription, room }) {
-			if (!settings.get('Message_AllowPinning') || message.pinned || !subscription) {
+		condition({ message, subscription }) {
+			if (!subscription || !settings.get('Message_AllowPinning') || !message.pinned) {
 				return false;
 			}
-			const isLivechatRoom = roomCoordinator.isLivechatRoom(room.t);
-			if (isLivechatRoom) {
-				return false;
-			}
+
 			return hasAtLeastOnePermission('pin-message', message.rid);
 		},
-		order: 7,
+		order: 8,
 		group: 'menu',
 	});
 });

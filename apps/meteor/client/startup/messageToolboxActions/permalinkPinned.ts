@@ -1,33 +1,28 @@
 import { Meteor } from 'meteor/meteor';
 
-import { MessageAction } from '../../../app/ui-utils/client';
+import { messageToolboxActions } from '../../../app/ui-utils/client';
 import { t } from '../../../app/utils/client';
 import { dispatchToastMessage } from '../../lib/toast';
 import { messageArgs } from '../../lib/utils/messageArgs';
 
 Meteor.startup(() => {
-	MessageAction.addButton({
-		id: 'permalink-star',
+	messageToolboxActions.add({
+		id: 'permalink-pinned',
 		icon: 'permalink',
 		label: 'Get_link',
-		// classes: 'clipboard',
-		context: ['starred', 'threads'],
+		context: ['pinned'],
 		async action(_, props) {
 			try {
 				const { message = messageArgs(this).msg } = props;
-				const permalink = await MessageAction.getPermaLink(message._id);
+				const permalink = await messageToolboxActions.getPermaLink(message._id);
 				navigator.clipboard.writeText(permalink);
 				dispatchToastMessage({ type: 'success', message: t('Copied') });
 			} catch (e) {
 				dispatchToastMessage({ type: 'error', message: e });
 			}
 		},
-		condition({ message, subscription, user }) {
-			if (subscription == null) {
-				return false;
-			}
-
-			return Boolean(message.starred?.find((star) => star._id === user?._id));
+		condition({ subscription }) {
+			return !!subscription;
 		},
 		order: 101,
 		group: 'menu',

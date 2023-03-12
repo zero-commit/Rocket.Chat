@@ -93,6 +93,7 @@ export type DataAPI = {
 	getSubscription(): Promise<ISubscription>;
 	findSubscriptionFromMessage(message: IMessage): Promise<ISubscription | undefined>;
 	getSubscriptionFromMessage(message: IMessage): Promise<ISubscription>;
+	prependReplies(msg: string, replies?: IMessage[]): Promise<string>;
 };
 
 export type UploadsAPI = {

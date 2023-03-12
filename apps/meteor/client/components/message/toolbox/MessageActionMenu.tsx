@@ -3,11 +3,11 @@ import { useTranslation } from '@rocket.chat/ui-contexts';
 import type { ComponentProps, UIEvent, ReactElement } from 'react';
 import React, { useState, Fragment, useRef } from 'react';
 
-import type { MessageActionConfig } from '../../../../app/ui-utils/client/lib/MessageAction';
+import type { MessageToolboxActionConfig } from '../../../../app/ui-utils/client/lib/MessageToolboxActions';
 import { useEmbeddedLayout } from '../../../hooks/useEmbeddedLayout';
 import ToolboxDropdown from './ToolboxDropdown';
 
-type MessageActionConfigOption = Omit<MessageActionConfig, 'condition' | 'context' | 'order' | 'action'> & {
+type MessageActionConfigOption = Omit<MessageToolboxActionConfig, 'condition' | 'context' | 'order' | 'action'> & {
 	action: (event: UIEvent) => void;
 };
 
@@ -22,18 +22,13 @@ export const MessageActionMenu = ({ options, ...props }: MessageActionMenuProps)
 	const [visible, setVisible] = useState(false);
 	const isLayoutEmbedded = useEmbeddedLayout();
 
-	const groupOptions = options
-		.map(({ color, ...option }) => ({
-			...option,
-			...(color === 'alert' && { variant: 'danger' as const }),
-		}))
-		.reduce((acc, option) => {
-			const group = option.variant ? option.variant : '';
-			acc[group] = acc[group] || [];
-			if (!(isLayoutEmbedded && option.id === 'reply-directly')) acc[group].push(option);
+	const groupOptions = options.reduce((acc, option) => {
+		const group = option.variant ? option.variant : '';
+		acc[group] = acc[group] || [];
+		if (!(isLayoutEmbedded && option.id === 'reply-directly')) acc[group].push(option);
 
-			return acc;
-		}, {} as { [key: string]: MessageActionConfigOption[] }) as {
+		return acc;
+	}, {} as { [key: string]: MessageActionConfigOption[] }) as {
 		[key: string]: MessageActionConfigOption[];
 	};
 

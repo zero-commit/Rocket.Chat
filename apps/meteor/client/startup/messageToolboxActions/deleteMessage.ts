@@ -1,17 +1,17 @@
 import { isRoomFederated } from '@rocket.chat/core-typings';
 import { Meteor } from 'meteor/meteor';
 
-import { MessageAction } from '../../../app/ui-utils/client/lib/MessageAction';
+import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { messageArgs } from '../../lib/utils/messageArgs';
 
 Meteor.startup(() => {
-	MessageAction.addButton({
+	messageToolboxActions.add({
 		id: 'delete-message',
 		icon: 'trash',
 		label: 'Delete',
 		context: ['message', 'message-mobile', 'threads', 'federated'],
-		color: 'alert',
+		variant: 'danger' as const,
 		action(this: unknown, _, { message = messageArgs(this).msg, chat }) {
 			chat?.flows.requestMessageDeletion(message);
 		},

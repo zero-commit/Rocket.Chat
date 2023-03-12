@@ -3,11 +3,11 @@ import { Meteor } from 'meteor/meteor';
 import moment from 'moment';
 
 import { hasAtLeastOnePermission, hasPermission } from '../../../app/authorization/client';
-import { MessageAction } from '../../../app/ui-utils/client/lib/MessageAction';
+import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
 import { messageArgs } from '../../lib/utils/messageArgs';
 
 Meteor.startup(() => {
-	MessageAction.addButton({
+	messageToolboxActions.add({
 		id: 'edit-message',
 		icon: 'edit',
 		label: 'Edit',

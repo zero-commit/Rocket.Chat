@@ -3,16 +3,16 @@ import { Meteor } from 'meteor/meteor';
 import { Tracker } from 'meteor/tracker';
 
 import { settings } from '../../../app/settings/client';
-import { MessageAction } from '../../../app/ui-utils/client';
+import { messageToolboxActions } from '../../../app/ui-utils/client';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { messageArgs } from '../../lib/utils/messageArgs';
 
 Meteor.startup(() => {
 	Tracker.autorun(() => {
 		if (!settings.get('Threads_enabled')) {
-			return MessageAction.removeButton('reply-in-thread');
+			return messageToolboxActions.remove('reply-in-thread');
 		}
-		MessageAction.addButton({
+		messageToolboxActions.add({
 			id: 'reply-in-thread',
 			icon: 'thread',
 			label: 'Reply_in_thread',

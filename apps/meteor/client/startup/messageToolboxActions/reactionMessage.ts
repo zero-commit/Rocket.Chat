@@ -1,12 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 
 import { EmojiPicker } from '../../../app/emoji/client';
-import { MessageAction } from '../../../app/ui-utils/client';
+import { messageToolboxActions } from '../../../app/ui-utils/client';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { messageArgs } from '../../lib/utils/messageArgs';
 
 Meteor.startup(() => {
-	MessageAction.addButton({
+	messageToolboxActions.add({
 		id: 'reaction-message',
 		icon: 'add-reaction',
 		label: 'Add_Reaction',

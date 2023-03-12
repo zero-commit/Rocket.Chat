@@ -14,7 +14,7 @@ import type { ChatContext } from '../../../../client/views/room/contexts/ChatCon
 import { APIClient } from '../../../utils/client';
 import type { AutoTranslateOptions } from '../../../../client/views/room/MessageList/hooks/useAutoTranslate';
 
-const getMessage = async (msgId: string): Promise<Serialized<IMessage> | null> => {
+const findMessage = async (msgId: string): Promise<Serialized<IMessage> | null> => {
 	try {
 		const { message } = await APIClient.get('/v1/chat.getMessage', { msgId });
 		return message;
@@ -23,8 +23,9 @@ const getMessage = async (msgId: string): Promise<Serialized<IMessage> | null> =
 	}
 };
 
-type MessageActionGroup = 'message' | 'menu';
-export type MessageActionContext =
+type MessageToolboxActionGroup = 'message' | 'menu';
+
+export type MessageToolboxActionContext =
 	| 'message'
 	| 'threads'
 	| 'message-mobile'
@@ -36,26 +37,24 @@ export type MessageActionContext =
 	| 'videoconf'
 	| 'search';
 
-type MessageActionConditionProps = {
+type MessageToolboxActionConditionParams = {
 	message: IMessage;
 	user: IUser | undefined;
 	room: IRoom;
 	subscription?: ISubscription;
-	context?: MessageActionContext;
+	context?: MessageToolboxActionContext;
 	settings: { [key: string]: SettingValue };
 	chat: ContextType<typeof ChatContext>;
 };
 
-export type MessageActionConfig = {
+export type MessageToolboxActionConfig = {
 	id: string;
 	icon: ComponentProps<typeof Icon>['name'];
 	variant?: 'danger' | 'success' | 'warning';
 	label: TranslationKey;
 	order?: number;
-	/* @deprecated */
-	color?: string;
-	group?: MessageActionGroup | MessageActionGroup[];
-	context?: MessageActionContext[];
+	group?: MessageToolboxActionGroup | MessageToolboxActionGroup[];
+	context?: MessageToolboxActionContext[];
 	action: (
 		e: UIEvent<Element>,
 		{
@@ -72,26 +71,15 @@ export type MessageActionConfig = {
 			autoTranslateOptions?: AutoTranslateOptions;
 		},
 	) => any;
-	condition?: (props: MessageActionConditionProps) => Promise<boolean> | boolean;
+	condition?: (props: MessageToolboxActionConditionParams) => Promise<boolean> | boolean;
 };
 
-type MessageActionConfigList = MessageActionConfig[];
+type MessageToolboxActionConfigList = MessageToolboxActionConfig[];
 
-export const MessageAction = new (class {
-	/*
-  	config expects the following keys (only id is mandatory):
-  		id (mandatory)
-  		icon: string
-  		label: string
-  		action: function(event, instance)
-  		condition: function(message)
-			order: integer
-			group: string (message or menu)
-   */
+class MessageToolboxActions {
+	private buttons = new ReactiveVar<Record<string, MessageToolboxActionConfig>>({});
 
-	buttons = new ReactiveVar<Record<string, MessageActionConfig>>({});
-
-	addButton(config: MessageActionConfig): void {
+	public add(config: MessageToolboxActionConfig): void {
 		if (!config?.id) {
 			return;
 		}
@@ -104,46 +92,34 @@ export const MessageAction = new (class {
 			config.condition = mem(config.condition, { maxAge: 1000, cacheKey: JSON.stringify });
 		}
 
-		return Tracker.nonreactive(() => {
+		Tracker.nonreactive(() => {
 			const btns = this.buttons.get();
 			btns[config.id] = config;
 			mem.clear(this._getButtons);
 			mem.clear(this.getButtonsByGroup);
-			return this.buttons.set(btns);
+			this.buttons.set(btns);
 		});
 	}
 
-	removeButton(id: MessageActionConfig['id']): void {
-		return Tracker.nonreactive(() => {
+	public remove(id: MessageToolboxActionConfig['id']): void {
+		Tracker.nonreactive(() => {
 			const btns = this.buttons.get();
 			delete btns[id];
-			return this.buttons.set(btns);
+			this.buttons.set(btns);
 		});
 	}
 
-	updateButton(id: MessageActionConfig['id'], config: MessageActionConfig): void {
-		return Tracker.nonreactive(() => {
-			const btns = this.buttons.get();
-			if (btns[id]) {
-				btns[id] = Object.assign(btns[id], config);
-				return this.buttons.set(btns);
-			}
-		});
-	}
+	private _getButtons = mem(
+		(): MessageToolboxActionConfigList => Object.values(this.buttons.get()).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
+		{
+			maxAge: 1000,
+		},
+	);
 
-	getButtonById(id: MessageActionConfig['id']): MessageActionConfig | undefined {
-		const allButtons = this.buttons.get();
-		return allButtons[id];
-	}
-
-	_getButtons = mem((): MessageActionConfigList => Object.values(this.buttons.get()).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)), {
-		maxAge: 1000,
-	});
-
-	async getButtonsByCondition(
-		prop: MessageActionConditionProps,
-		arr: MessageActionConfigList = MessageAction._getButtons(),
-	): Promise<MessageActionConfigList> {
+	private async getButtonsByCondition(
+		prop: MessageToolboxActionConditionParams,
+		arr: MessageToolboxActionConfigList = messageToolboxActions._getButtons(),
+	): Promise<MessageToolboxActionConfigList> {
 		return (
 			await Promise.all(
 				arr.map(async (button) => {
@@ -155,23 +131,26 @@ export const MessageAction = new (class {
 			.map(([button]) => button);
 	}
 
-	getButtonsByGroup = mem(
-		function (group: MessageActionGroup, arr: MessageActionConfigList = MessageAction._getButtons()): MessageActionConfigList {
+	private getButtonsByGroup = mem(
+		function (
+			group: MessageToolboxActionGroup,
+			arr: MessageToolboxActionConfigList = messageToolboxActions._getButtons(),
+		): MessageToolboxActionConfigList {
 			return arr.filter((button) => !button.group || (Array.isArray(button.group) ? button.group.includes(group) : button.group === group));
 		},
 		{ maxAge: 1000 },
 	);
 
-	getButtonsByContext(context: MessageActionContext, arr: MessageActionConfigList): MessageActionConfigList {
+	private getButtonsByContext(context: MessageToolboxActionContext, arr: MessageToolboxActionConfigList): MessageToolboxActionConfigList {
 		return !context ? arr : arr.filter((button) => !button.context || button.context.includes(context));
 	}
 
-	async getButtons(
-		props: MessageActionConditionProps,
-		context: MessageActionContext,
-		group: MessageActionGroup,
-	): Promise<MessageActionConfigList> {
-		const allButtons = group ? this.getButtonsByGroup(group) : MessageAction._getButtons();
+	public async get(
+		props: MessageToolboxActionConditionParams,
+		context: MessageToolboxActionContext,
+		group: MessageToolboxActionGroup,
+	): Promise<MessageToolboxActionConfigList> {
+		const allButtons = group ? this.getButtonsByGroup(group) : messageToolboxActions._getButtons();
 
 		if (props.message) {
 			return this.getButtonsByCondition({ ...props, context }, this.getButtonsByContext(context, allButtons));
@@ -179,24 +158,16 @@ export const MessageAction = new (class {
 		return allButtons;
 	}
 
-	resetButtons(): void {
-		mem.clear(this._getButtons);
-		mem.clear(this.getButtonsByGroup);
-		return this.buttons.set({});
-	}
-
-	async getPermaLink(msgId: string): Promise<string> {
-		if (!msgId) {
+	public async getPermaLink(mid: IMessage['_id']): Promise<string> {
+		if (!mid) {
 			throw new Error('invalid-parameter');
 		}
 
-		const msg = Messages.findOne(msgId) || (await getMessage(msgId));
+		const msg = Messages.findOne(mid) || (await findMessage(mid));
 		if (!msg) {
 			throw new Error('message-not-found');
 		}
-		const roomData = Rooms.findOne({
-			_id: msg.rid,
-		});
+		const roomData = Rooms.findOne({ _id: msg.rid });
 
 		if (!roomData) {
 			throw new Error('room-not-found');
@@ -204,6 +175,8 @@ export const MessageAction = new (class {
 
 		const subData = Subscriptions.findOne({ 'rid': roomData._id, 'u._id': Meteor.userId() });
 		const roomURL = roomCoordinator.getURL(roomData.t, subData || roomData);
-		return `${roomURL}?msg=${msgId}`;
+		return `${roomURL}?msg=${mid}`;
 	}
-})();
+}
+
+export const messageToolboxActions = new MessageToolboxActions();
