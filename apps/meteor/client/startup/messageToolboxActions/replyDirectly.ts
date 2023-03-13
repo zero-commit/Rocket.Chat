@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 
 import { hasPermission } from '../../../app/authorization/client';
 import { Rooms, Subscriptions } from '../../../app/models/client';
-import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
+import { messageToolboxActions } from '../../lib/MessageToolboxActions';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { messageArgs } from '../../lib/utils/messageArgs';
 

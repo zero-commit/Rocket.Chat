@@ -2,7 +2,7 @@ import type { IMessage } from '@rocket.chat/core-typings';
 import { Meteor } from 'meteor/meteor';
 import { TAPi18n } from 'meteor/rocketchat:tap-i18n';
 
-import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
+import { messageToolboxActions } from '../../lib/MessageToolboxActions';
 import { dispatchToastMessage } from '../../lib/toast';
 import { messageArgs } from '../../lib/utils/messageArgs';
 

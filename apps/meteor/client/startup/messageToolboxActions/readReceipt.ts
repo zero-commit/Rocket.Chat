@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Tracker } from 'meteor/tracker';
 
 import { settings } from '../../../app/settings/client';
-import { messageToolboxActions } from '../../../app/ui-utils/client';
+import { messageToolboxActions } from '../../lib/MessageToolboxActions';
 import { imperativeModal } from '../../lib/imperativeModal';
 import { messageArgs } from '../../lib/utils/messageArgs';
 import ReadReceiptsModal from '../../views/room/modals/ReadReceiptsModal';

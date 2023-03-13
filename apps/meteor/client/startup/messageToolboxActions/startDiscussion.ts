@@ -3,8 +3,8 @@ import { Tracker } from 'meteor/tracker';
 
 import { hasPermission } from '../../../app/authorization/client';
 import { settings } from '../../../app/settings/client';
-import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
 import CreateDiscussion from '../../components/CreateDiscussion/CreateDiscussion';
+import { messageToolboxActions } from '../../lib/MessageToolboxActions';
 import { imperativeModal } from '../../lib/imperativeModal';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { messageArgs } from '../../lib/utils/messageArgs';

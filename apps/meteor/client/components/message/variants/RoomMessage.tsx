@@ -5,7 +5,7 @@ import { useUserId } from '@rocket.chat/ui-contexts';
 import type { ReactElement } from 'react';
 import React, { useRef, memo } from 'react';
 
-import type { MessageToolboxActionContext } from '../../../../app/ui-utils/client/lib/MessageToolboxActions';
+import type { MessageToolboxActionContext } from '../../../lib/MessageToolboxActions';
 import { useIsMessageHighlight } from '../../../views/room/MessageList/contexts/MessageHighlightContext';
 import {
 	useIsSelecting,

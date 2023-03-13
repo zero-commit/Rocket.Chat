@@ -6,8 +6,8 @@ import { useQuery } from '@tanstack/react-query';
 import type { ReactElement } from 'react';
 import React, { memo, useMemo } from 'react';
 
-import type { MessageToolboxActionContext } from '../../../../app/ui-utils/client/lib/MessageToolboxActions';
-import { messageToolboxActions } from '../../../../app/ui-utils/client/lib/MessageToolboxActions';
+import type { MessageToolboxActionContext } from '../../../lib/MessageToolboxActions';
+import { messageToolboxActions } from '../../../lib/MessageToolboxActions';
 import { useIsSelecting } from '../../../views/room/MessageList/contexts/SelectedMessagesContext';
 import { useAutoTranslate } from '../../../views/room/MessageList/hooks/useAutoTranslate';
 import { useChat } from '../../../views/room/contexts/ChatContext';

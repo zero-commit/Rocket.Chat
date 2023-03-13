@@ -3,8 +3,8 @@ import { useTranslation } from '@rocket.chat/ui-contexts';
 import type { ComponentProps, UIEvent, ReactElement } from 'react';
 import React, { useState, Fragment, useRef } from 'react';
 
-import type { MessageToolboxActionConfig } from '../../../../app/ui-utils/client/lib/MessageToolboxActions';
 import { useEmbeddedLayout } from '../../../hooks/useEmbeddedLayout';
+import type { MessageToolboxActionConfig } from '../../../lib/MessageToolboxActions';
 import ToolboxDropdown from './ToolboxDropdown';
 
 type MessageActionConfigOption = Omit<MessageToolboxActionConfig, 'condition' | 'context' | 'order' | 'action'> & {

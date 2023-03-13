@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 import { settings } from '../../../app/settings/client';
-import { messageToolboxActions } from '../../../app/ui-utils/client';
+import { messageToolboxActions } from '../../lib/MessageToolboxActions';
 import { messageArgs } from '../../lib/utils/messageArgs';
 import { setMessageJumpQueryStringParameter } from '../../lib/utils/setMessageJumpQueryStringParameter';
 

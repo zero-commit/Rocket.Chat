@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { ReactElement } from 'react';
 import React, { memo, useRef } from 'react';
 
-import type { MessageToolboxActionContext } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
+import type { MessageToolboxActionContext } from '../../lib/MessageToolboxActions';
 import { useChat } from '../../views/room/contexts/ChatContext';
 import { useIsVisible } from '../../views/room/hooks/useIsVisible';
 import Toolbox from './toolbox/Toolbox';

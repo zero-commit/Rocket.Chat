@@ -1,7 +1,7 @@
 import type { IMessage } from '@rocket.chat/core-typings';
 import { Meteor } from 'meteor/meteor';
 
-import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
+import { messageToolboxActions } from '../../lib/MessageToolboxActions';
 import { imperativeModal } from '../../lib/imperativeModal';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { messageArgs } from '../../lib/utils/messageArgs';

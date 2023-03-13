@@ -6,7 +6,7 @@ import { hasAtLeastOnePermission } from '../../../app/authorization/client';
 import { AutoTranslate } from '../../../app/autotranslate/client/lib/autotranslate';
 import { Messages } from '../../../app/models/client';
 import { settings } from '../../../app/settings/client';
-import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
+import { messageToolboxActions } from '../../lib/MessageToolboxActions';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { call } from '../../lib/utils/call';
 import { messageArgs } from '../../lib/utils/messageArgs';

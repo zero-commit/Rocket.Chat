@@ -5,8 +5,8 @@ import { useTranslation } from '@rocket.chat/ui-contexts';
 import type { FC } from 'react';
 import React, { memo, useRef } from 'react';
 
+import type { QuickActionsActionOptions } from '../../../../../lib/QuickActions';
 import { useDropdownVisibility } from '../../../../../sidebar/header/hooks/useDropdownVisibility';
-import type { QuickActionsActionOptions } from '../../../lib/QuickActions';
 
 type ToolBoxActionOptionsProps = {
 	options: QuickActionsActionOptions;

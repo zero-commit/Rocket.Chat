@@ -1,0 +1,32 @@
+import { isRoomFederated } from '@rocket.chat/core-typings';
+import { useSetting } from '@rocket.chat/ui-contexts';
+import { useMemo, lazy } from 'react';
+
+import { roomToolboxActions } from '../../views/room/lib/Toolbox';
+
+const template = lazy(() => import('../../views/room/contextualBar/Discussions'));
+
+roomToolboxActions.add('discussions', ({ room }) => {
+	const discussionEnabled = useSetting('Discussion_enabled');
+	const federated = isRoomFederated(room);
+
+	return useMemo(
+		() =>
+			discussionEnabled && !room.prid
+				? {
+						groups: ['channel', 'group', 'direct', 'direct_multiple', 'team'],
+						id: 'discussions',
+						title: 'Discussions',
+						icon: 'discussion',
+						template,
+						full: true,
+						...(federated && {
+							'disabled': true,
+							'data-tooltip': 'Discussions_unavailable_for_federation',
+						}),
+						order: 3,
+				  }
+				: null,
+		[discussionEnabled, room.prid, federated],
+	);
+});

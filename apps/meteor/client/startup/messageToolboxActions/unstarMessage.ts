@@ -2,7 +2,7 @@ import type { IUser } from '@rocket.chat/core-typings';
 import { Meteor } from 'meteor/meteor';
 
 import { settings } from '../../../app/settings/client';
-import { messageToolboxActions } from '../../../app/ui-utils/client';
+import { messageToolboxActions } from '../../lib/MessageToolboxActions';
 import { queryClient } from '../../lib/queryClient';
 import { dispatchToastMessage } from '../../lib/toast';
 import { call } from '../../lib/utils/call';

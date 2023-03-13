@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
-import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
+import { messageToolboxActions } from '../../lib/MessageToolboxActions';
 import { messageArgs } from '../../lib/utils/messageArgs';
 
 Meteor.startup(() => {

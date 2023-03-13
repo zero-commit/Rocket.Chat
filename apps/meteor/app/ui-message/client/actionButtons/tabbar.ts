@@ -1,6 +1,6 @@
 import type { IUIActionButton } from '@rocket.chat/apps-engine/definition/ui';
 
-import { addAction, deleteAction } from '../../../../client/views/room/lib/Toolbox';
+import { roomToolboxActions } from '../../../../client/views/room/lib/Toolbox';
 import { Utilities } from '../../../../ee/lib/misc/Utilities';
 import { t } from '../../../utils/client';
 import { triggerActionButtonAction } from '../ActionManager';
@@ -8,9 +8,8 @@ import { applyButtonFilters } from './lib/applyButtonFilters';
 
 const getIdForActionButton = ({ appId, actionId }: IUIActionButton): string => `${appId}/${actionId}`;
 
-export const onAdded = (button: IUIActionButton): void =>
-	// eslint-disable-next-line no-void
-	void addAction(getIdForActionButton(button), ({ room }) =>
+export const onAdded = (button: IUIActionButton): void => {
+	roomToolboxActions.add(getIdForActionButton(button), ({ room }) =>
 		applyButtonFilters(button, room)
 			? {
 					id: button.actionId,
@@ -30,5 +29,6 @@ export const onAdded = (button: IUIActionButton): void =>
 			  }
 			: null,
 	);
+};
 
-export const onRemoved = (button: IUIActionButton): boolean => deleteAction(getIdForActionButton(button));
+export const onRemoved = (button: IUIActionButton): boolean => roomToolboxActions.remove(getIdForActionButton(button));

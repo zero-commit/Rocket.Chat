@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
-import { messageToolboxActions } from '../../../app/ui-utils/client/lib/MessageToolboxActions';
+import { messageToolboxActions } from '../../lib/MessageToolboxActions';
 import { imperativeModal } from '../../lib/imperativeModal';
 import { messageArgs } from '../../lib/utils/messageArgs';
 import ReactionList from '../../views/room/modals/ReactionListModal';

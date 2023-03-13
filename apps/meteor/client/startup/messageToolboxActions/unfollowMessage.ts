@@ -4,7 +4,7 @@ import { Tracker } from 'meteor/tracker';
 
 import { Messages } from '../../../app/models/client';
 import { settings } from '../../../app/settings/client';
-import { messageToolboxActions } from '../../../app/ui-utils/client';
+import { messageToolboxActions } from '../../lib/MessageToolboxActions';
 import { dispatchToastMessage } from '../../lib/toast';
 import { callWithErrorHandling } from '../../lib/utils/callWithErrorHandling';
 

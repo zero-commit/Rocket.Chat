@@ -1,10 +1,8 @@
 import type { EventHandlerOf } from '@rocket.chat/emitter';
 import { createContext, useContext } from 'react';
 
-import type { QuickActionsActionConfig, QuickActionsAction, Events } from '.';
-import { actions, listen } from '.';
-
-import './defaultActions';
+import type { QuickActionsActionConfig, QuickActionsAction, Events } from '../../../../lib/QuickActions';
+import { actions, listen } from '../../../../lib/QuickActions';
 
 export type QuickActionsEventHandler = (handler: EventHandlerOf<Events, 'change'>) => unknown;
 

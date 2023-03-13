@@ -8,7 +8,6 @@ import React, { useCallback } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import { MessageTypes } from '../../../../../app/ui-utils/client';
-import type { MessageToolboxActionContext } from '../../../../../app/ui-utils/client/lib/MessageToolboxActions';
 import ScrollableContentWrapper from '../../../../components/ScrollableContentWrapper';
 import VerticalBarClose from '../../../../components/VerticalBar/VerticalBarClose';
 import VerticalBarContent from '../../../../components/VerticalBar/VerticalBarContent';
@@ -18,6 +17,7 @@ import VerticalBarText from '../../../../components/VerticalBar/VerticalBarText'
 import RoomMessage from '../../../../components/message/variants/RoomMessage';
 import SystemMessage from '../../../../components/message/variants/SystemMessage';
 import { useFormatDate } from '../../../../hooks/useFormatDate';
+import type { MessageToolboxActionContext } from '../../../../lib/MessageToolboxActions';
 import MessageListErrorBoundary from '../../MessageList/MessageListErrorBoundary';
 import { isMessageFirstUnread } from '../../MessageList/lib/isMessageFirstUnread';
 import { isMessageNewDay } from '../../MessageList/lib/isMessageNewDay';

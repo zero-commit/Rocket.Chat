@@ -2,8 +2,8 @@ import { Meteor } from 'meteor/meteor';
 
 import { WebdavAccounts } from '../../../app/models/client';
 import { settings } from '../../../app/settings/client';
-import { messageToolboxActions } from '../../../app/ui-utils/client';
 import { getURL } from '../../../app/utils/client';
+import { messageToolboxActions } from '../../lib/MessageToolboxActions';
 import { imperativeModal } from '../../lib/imperativeModal';
 import { messageArgs } from '../../lib/utils/messageArgs';
 import SaveToWebdav from '../../views/room/webdav/SaveToWebdavModal';

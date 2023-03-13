@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 import { EmojiPicker } from '../../../app/emoji/client';
-import { messageToolboxActions } from '../../../app/ui-utils/client';
+import { messageToolboxActions } from '../../lib/MessageToolboxActions';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { call } from '../../lib/utils/call';
 import { messageArgs } from '../../lib/utils/messageArgs';
