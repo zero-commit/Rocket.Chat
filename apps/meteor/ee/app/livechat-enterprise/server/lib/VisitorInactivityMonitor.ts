@@ -79,7 +79,7 @@ export class VisitorInactivityMonitor {
 			this.logger.debug(`Using cached department abandoned custom message for department ${departmentId}`);
 			return this.messageCache.get('departmentId');
 		}
-		const department = await LivechatDepartment.findOneById(departmentId);
+		const department = await LivechatDepartment.findOneById(departmentId, { projection: { _id: 1, abandonedRoomsCloseCustomMessage: 1 } });
 		if (!department) {
 			this.logger.debug(`Department ${departmentId} not found`);
 			return;

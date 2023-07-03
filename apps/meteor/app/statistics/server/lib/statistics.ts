@@ -146,14 +146,14 @@ export const statistics = {
 
 		// Number of departments
 		statsPms.push(
-			LivechatDepartment.col.count().then((count) => {
+			LivechatDepartment.col.estimatedDocumentCount().then((count) => {
 				statistics.departments = count;
 			}),
 		);
 
 		// Number of archived departments
 		statsPms.push(
-			LivechatDepartment.col.countDocuments({ archived: true }).then((count) => {
+			LivechatDepartment.countArchived().then((count) => {
 				statistics.archivedDepartments = count;
 			}),
 		);

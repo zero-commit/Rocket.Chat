@@ -21,12 +21,17 @@ declare module '@rocket.chat/model-typings' {
 			businessUnit: string,
 			projection: FindOptions<ILivechatDepartment>['projection'],
 		): Promise<FindCursor<ILivechatDepartment>>;
+		findByParentId(parentId: string, options?: FindOptions<ILivechatDepartment>): FindCursor<ILivechatDepartment>;
 	}
 }
 
 export class LivechatDepartmentEE extends LivechatDepartmentRaw implements ILivechatDepartmentModel {
 	constructor(db: Db, trash?: Collection<RocketChatRecordDeleted<ILivechatDepartment>>) {
 		super(db, trash);
+	}
+
+	findByParentId(parentId: string, options?: FindOptions<ILivechatDepartment>): FindCursor<ILivechatDepartment> {
+		return this.col.find({ parentId }, options);
 	}
 
 	async removeDepartmentFromForwardListById(departmentId: string): Promise<void> {

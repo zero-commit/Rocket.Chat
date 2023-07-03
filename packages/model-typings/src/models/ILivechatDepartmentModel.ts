@@ -60,4 +60,6 @@ export interface ILivechatDepartmentModel extends IBaseModel<ILivechatDepartment
 	findByUnitIds(unitIds: string[], options?: FindOptions<ILivechatDepartment>): FindCursor<ILivechatDepartment>;
 	findActiveByUnitIds(unitIds: string[], options?: FindOptions<ILivechatDepartment>): FindCursor<ILivechatDepartment>;
 	checkIfMonitorIsMonitoringDepartmentById(monitorId: string, departmentId: string): Promise<boolean>;
+	countArchived(): Promise<number>;
+	findEnabledInIds(departmentsIds: string[], options?: FindOptions<ILivechatDepartment>): FindCursor<ILivechatDepartment>;
 }

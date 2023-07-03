@@ -18,7 +18,7 @@ callbacks.add(
 			return options;
 		}
 		const { department: departmentToTransfer } = transferData;
-		const currentDepartment = await LivechatDepartment.findOneById(departmentId);
+		const currentDepartment = await LivechatDepartment.findOneById(departmentId, { projection: { departmentsAllowedToForward: 1 } });
 		if (!currentDepartment) {
 			cbLogger.debug('Skipping callback. Current department does not exists');
 			return options;

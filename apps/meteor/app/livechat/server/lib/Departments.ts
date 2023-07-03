@@ -9,7 +9,7 @@ class DepartmentHelperClass {
 	async removeDepartment(departmentId: string) {
 		this.logger.debug(`Removing department: ${departmentId}`);
 
-		const department = await LivechatDepartment.findOneById(departmentId);
+		const department = await LivechatDepartment.findOneById(departmentId, { projection: { _id: 1 } });
 		if (!department) {
 			this.logger.debug(`Department not found: ${departmentId}`);
 			throw new Error('error-department-not-found');

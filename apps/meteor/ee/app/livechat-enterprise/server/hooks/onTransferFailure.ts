@@ -31,7 +31,7 @@ const onTransferFailure = async ({
 		prevDepartment: department.name,
 		departmentId: department.fallbackForwardDepartment,
 		department: await LivechatDepartment.findOneById(department.fallbackForwardDepartment, {
-			fields: { name: 1, _id: 1 },
+			projection: { name: 1, _id: 1 },
 		}),
 	};
 

@@ -95,6 +95,11 @@ export class LivechatDepartmentRaw extends BaseRaw<ILivechatDepartment> implemen
 		return this.find(query, options);
 	}
 
+	findEnabledInIds(departmentsIds: string[], options?: FindOptions<ILivechatDepartment>): FindCursor<ILivechatDepartment> {
+		const query = { _id: { $in: departmentsIds }, enabled: true };
+		return this.find(query, options);
+	}
+
 	findByNameRegexWithExceptionsAndConditions(
 		searchTerm: string,
 		exceptions: string[] = [],
@@ -393,6 +398,10 @@ export class LivechatDepartmentRaw extends BaseRaw<ILivechatDepartment> implemen
 		];
 
 		return this.col.aggregate(aggregation).hasNext();
+	}
+
+	countArchived(): Promise<number> {
+		return this.col.countDocuments({ archived: true });
 	}
 }
 

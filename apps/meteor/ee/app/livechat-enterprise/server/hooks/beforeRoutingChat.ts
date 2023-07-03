@@ -16,7 +16,7 @@ callbacks.add(
 		// check here if department has fallback before queueing
 		if (inquiry?.department && !(await online(inquiry.department, true, true))) {
 			cbLogger.debug('No agents online on selected department. Inquiry will use fallback department');
-			const department = await LivechatDepartment.findOneById(inquiry.department);
+			const department = await LivechatDepartment.findOneById(inquiry.department, { projection: { fallbackForwardDepartment: 1 } });
 
 			if (!department) {
 				cbLogger.debug('No department found. Skipping');

@@ -76,7 +76,7 @@ Meteor.methods<ServerMethods>({
 			});
 		}
 
-		if (responseData.departmentId && !(await LivechatDepartment.findOneById(responseData.departmentId))) {
+		if (responseData.departmentId && !(await LivechatDepartment.findOneById(responseData.departmentId, { projection: { _id: 1 } }))) {
 			throw new Meteor.Error('error-invalid-department', 'Invalid department', {
 				method: 'saveCannedResponse',
 			});

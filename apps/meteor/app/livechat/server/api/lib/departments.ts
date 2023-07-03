@@ -192,6 +192,6 @@ export async function findDepartmentsBetweenIds({
 	ids: string[];
 	fields: Record<string, unknown>;
 }): Promise<{ departments: ILivechatDepartment[] }> {
-	const departments = await LivechatDepartment.findInIds(ids, fields).toArray();
+	const departments = await LivechatDepartment.findInIds(ids, { projection: fields }).toArray();
 	return { departments };
 }
