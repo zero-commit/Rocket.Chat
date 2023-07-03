@@ -8,7 +8,9 @@ import { getOmniChatSortQuery } from '../../../lib/inquiries';
 import { getInquirySortMechanismSetting } from '../../lib/settings';
 
 const agentDepartments = async (userId: IUser['_id']): Promise<string[]> => {
-	const agentDepartments = (await LivechatDepartmentAgents.findByAgentId(userId).toArray()).map(({ departmentId }) => departmentId);
+	const agentDepartments = (await LivechatDepartmentAgents.findByAgentId(userId, { projection: { departmentId: 1 } }).toArray()).map(
+		({ departmentId }) => departmentId,
+	);
 	return (await LivechatDepartment.findEnabledInIds(agentDepartments, { projection: { _id: 1 } }).toArray()).map(({ _id }) => _id);
 };
 

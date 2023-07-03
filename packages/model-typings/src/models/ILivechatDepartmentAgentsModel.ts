@@ -20,7 +20,7 @@ export interface ILivechatDepartmentAgentsModel extends IBaseModel<ILivechatDepa
 			| FindOptions<ILivechatDepartmentAgents>
 			| FindOptions<P extends ILivechatDepartmentAgents ? ILivechatDepartmentAgents : P>,
 	): FindCursor<ILivechatDepartmentAgents> | FindCursor<P>;
-	findByAgentId(agentId: string): FindCursor<ILivechatDepartmentAgents>;
+	findByAgentId(agentId: string, options?: FindOptions<ILivechatDepartmentAgents>): FindCursor<ILivechatDepartmentAgents>;
 
 	findAgentsByDepartmentId(departmentId: string): FindPaginated<FindCursor<ILivechatDepartmentAgents>>;
 
@@ -60,8 +60,12 @@ export interface ILivechatDepartmentAgentsModel extends IBaseModel<ILivechatDepa
 	findAgentsByAgentIdAndBusinessHourId(_agentId: string, _businessHourId: string): Promise<ILivechatDepartmentAgents[]>;
 	setDepartmentEnabledByDepartmentId(departmentId: string, departmentEnabled: boolean): Promise<Document | UpdateResult>;
 	removeByDepartmentId(departmentId: string): Promise<DeleteResult>;
-	findByDepartmentId(departmentId: string): FindCursor<ILivechatDepartmentAgents>;
-	findOneByAgentIdAndDepartmentId(agentId: string, departmentId: string): Promise<ILivechatDepartmentAgents | null>;
+	findByDepartmentId(departmentId: string, options?: FindOptions<ILivechatDepartmentAgents>): FindCursor<ILivechatDepartmentAgents>;
+	findOneByAgentIdAndDepartmentId(
+		agentId: string,
+		departmentId: string,
+		options?: FindOptions<ILivechatDepartmentAgents>,
+	): Promise<ILivechatDepartmentAgents | null>;
 	saveAgent(agent: {
 		agentId: string;
 		departmentId: string;

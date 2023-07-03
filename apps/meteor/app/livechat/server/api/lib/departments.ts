@@ -129,7 +129,7 @@ export async function findDepartmentById({
 		department: await LivechatDepartment.findOne(query),
 		...(includeAgents &&
 			canViewLivechatDepartments && {
-				agents: await LivechatDepartmentAgents.find({ departmentId }).toArray(),
+				agents: await LivechatDepartmentAgents.findByDepartmentId(departmentId).toArray(),
 			}),
 	};
 

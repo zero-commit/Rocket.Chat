@@ -254,7 +254,9 @@ export class LivechatDepartmentRaw extends BaseRaw<ILivechatDepartment> implemen
 
 	async saveDepartmentsByAgent(agent: { _id: string; username: string }, departments: string[] = []): Promise<void> {
 		const { _id: agentId, username } = agent;
-		const savedDepartments = (await LivechatDepartmentAgents.findByAgentId(agentId).toArray()).map((d) => d.departmentId);
+		const savedDepartments = (await LivechatDepartmentAgents.findByAgentId(agentId, { projection: { departmentId: 1 } }).toArray()).map(
+			(d) => d.departmentId,
+		);
 
 		const incNumAgents = (_id: string, numAgents: number) => this.updateOne({ _id }, { $inc: { numAgents } });
 		// remove other departments
@@ -402,6 +404,10 @@ export class LivechatDepartmentRaw extends BaseRaw<ILivechatDepartment> implemen
 
 	countArchived(): Promise<number> {
 		return this.col.countDocuments({ archived: true });
+	}
+
+	findByParentId(_parentId: string, _options?: FindOptions<ILivechatDepartment> | undefined): FindCursor<ILivechatDepartment> {
+		throw new Error('Method not implemented.');
 	}
 }
 

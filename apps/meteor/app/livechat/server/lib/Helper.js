@@ -447,7 +447,7 @@ export const forwardRoomToDepartment = async (room, guest, transferData) => {
 		if (!user) {
 			throw new Error('error-user-is-offline');
 		}
-		user = await LivechatDepartmentAgents.findOneByAgentIdAndDepartmentId(agentId, departmentId);
+		user = await LivechatDepartmentAgents.findOneByAgentIdAndDepartmentId(agentId, departmentId, { projection: { _id: 1 } });
 		if (!user) {
 			throw new Error('error-user-not-belong-to-department');
 		}
