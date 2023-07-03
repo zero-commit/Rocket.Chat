@@ -78,14 +78,14 @@ async function getEEStatistics(): Promise<EEOnlyStats | undefined> {
 	);
 
 	statsPms.push(
-		LivechatRooms.col.countDocuments({ priorityId: { $exists: true } }).then((count) => {
+		LivechatRooms.countPrioritizedRooms().then((count) => {
 			statistics.omnichannelRoomsWithPriorities = count;
 			return true;
 		}),
 	);
 
 	statsPms.push(
-		LivechatRooms.col.countDocuments({ slaId: { $exists: true } }).then((count) => {
+		LivechatRooms.countRoomsWithSla().then((count) => {
 			statistics.omnichannelRoomsWithSlas = count;
 			return true;
 		}),
@@ -101,7 +101,7 @@ async function getEEStatistics(): Promise<EEOnlyStats | undefined> {
 
 	statsPms.push(
 		// Total livechat monitors
-		Users.col.countDocuments({ type: 'livechat-monitor' }).then((count) => {
+		Users.col.countDocuments({ role: 'livechat-monitor' }).then((count) => {
 			statistics.livechatMonitors = count;
 			return true;
 		}),
@@ -109,8 +109,7 @@ async function getEEStatistics(): Promise<EEOnlyStats | undefined> {
 
 	// Number of PDF transcript requested
 	statsPms.push(
-		LivechatRooms.find({ pdfTranscriptRequested: { $exists: true } })
-			.count()
+		LivechatRooms.countRoomsWithPdfTranscriptRequested()
 			.then((count) => {
 				statistics.omnichannelPdfTranscriptRequested = count;
 			}),
@@ -118,8 +117,7 @@ async function getEEStatistics(): Promise<EEOnlyStats | undefined> {
 
 	// Number of PDF transcript that succeeded
 	statsPms.push(
-		LivechatRooms.find({ pdfTranscriptFileId: { $exists: true } })
-			.count()
+		LivechatRooms.countRoomsWithTranscriptSent()
 			.then((count) => {
 				statistics.omnichannelPdfTranscriptSucceeded = count;
 			}),
