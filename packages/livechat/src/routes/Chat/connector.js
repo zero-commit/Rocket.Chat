@@ -75,7 +75,7 @@ const ChatConnector = ({ ref, ...props }) => (
 						: undefined
 				}
 				room={room}
-				messages={messages && messages.filter((message) => canRenderMessage(message))}
+				messages={messages && messages.filter(canRenderMessage)}
 				noMoreMessages={noMoreMessages}
 				emoji={true}
 				uploads={uploads}

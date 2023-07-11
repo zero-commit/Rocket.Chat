@@ -154,6 +154,8 @@ export const msgTypesNotRendered = [
 
 export const canRenderMessage = ({ t }) => !msgTypesNotRendered.includes(t);
 
+export const canRenderTriggerMessage = (user) => (message) => !!user && message.triggerAfterStartChat;
+
 export const getAttachmentUrl = (url) => new URL(url, getConnectionBaseUrl()).toString();
 
 export const sortArrayByColumn = (array, column, inverted) =>
