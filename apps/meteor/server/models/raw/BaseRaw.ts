@@ -23,7 +23,7 @@ import type {
 	DeleteOptions,
 } from 'mongodb';
 import { ObjectId } from 'mongodb';
-import type { RocketChatRecordDeleted } from '@rocket.chat/core-typings';
+import type { RocketChatRecordDeleted, PickNested, OmitNested } from '@rocket.chat/core-typings';
 import type { IBaseModel, DefaultFields, ResultFields, FindPaginated, InsertionModel } from '@rocket.chat/model-typings';
 import { getCollectionName } from '@rocket.chat/models';
 
@@ -140,11 +140,18 @@ export abstract class BaseRaw<
 		return this.col.findOneAndUpdate(query, update, options || {});
 	}
 
-	async findOneById(_id: T['_id'], options?: FindOptions<T>): Promise<T | null>;
+	async findOneById<
+		const E extends FindOptions<T>,
+		K extends E extends { projection: any }
+			? E['projection'] extends { [k: string]: 1 }
+				? PickNested<WithId<T>, '_id' | keyof E['projection']>
+				: OmitNested<WithId<T>, keyof E['projection']>
+			: T,
+	>(_id: T['_id'], options?: E): Promise<K | null>;
 
-	async findOneById<P extends Document = T>(_id: T['_id'], options?: FindOptions<P>): Promise<P | null>;
+	async findOneById<P extends Document = T>(_id: T['_id']): Promise<P | null>;
 
-	async findOneById(_id: T['_id'], options?: any): Promise<T | null> {
+	async findOneById(_id: T['_id'], options?: FindOptions<T>): Promise<T | null> {
 		const query: Filter<T> = { _id } as Filter<T>;
 		if (options) {
 			return this.findOne(query, options);
@@ -152,11 +159,18 @@ export abstract class BaseRaw<
 		return this.findOne(query);
 	}
 
-	async findOne(query?: Filter<T> | T['_id'], options?: undefined): Promise<T | null>;
+	async findOne<
+		const E extends FindOptions<T>,
+		K extends E extends { projection: any }
+			? E['projection'] extends { [k: string]: 1 }
+				? PickNested<WithId<T>, '_id' | keyof E['projection']>
+				: OmitNested<WithId<T>, keyof E['projection']>
+			: T,
+	>(_id: T['_id'] | Filter<T>, options?: E): Promise<K | null>;
 
-	async findOne<P extends Document = T>(query: Filter<T> | T['_id'], options?: FindOptions<P extends T ? T : P>): Promise<P | null>;
+	async findOne<P extends Document = T>(query: Filter<T> | T['_id']): Promise<P | null>;
 
-	async findOne<P>(query: Filter<T> | T['_id'] = {}, options?: any): Promise<WithId<T> | WithId<P> | null> {
+	async findOne(query: Filter<T> | T['_id'] = {}, options?: FindOptions<T>): Promise<WithId<T> | null> {
 		const q: Filter<T> = typeof query === 'string' ? ({ _id: query } as Filter<T>) : query;
 		const optionsDef = this.doNotMixInclusionAndExclusionFields(options);
 		if (optionsDef) {
@@ -165,25 +179,44 @@ export abstract class BaseRaw<
 		return this.col.findOne(q);
 	}
 
+	find<E extends T>(query: Filter<T>, options?: FindOptions<E>): FindCursor<E>;
+
+	find<
+		E extends FindOptions<T>,
+		K extends E extends { projection: any }
+			? E['projection'] extends { [k: string]: 1 }
+				? PickNested<WithId<T>, '_id' | keyof E['projection']>
+				: OmitNested<WithId<T>, keyof E['projection']>
+			: T,
+	>(query: Filter<T>, options?: E): FindCursor<K>;
+
 	find(query?: Filter<T>): FindCursor<ResultFields<T, C>>;
 
-	find<P extends Document = T>(query: Filter<T>, options?: FindOptions<P extends T ? T : P>): FindCursor<P>;
+	find<P extends Document = T>(query: Filter<T>): FindCursor<P>;
 
-	find<P extends Document>(
-		query: Filter<T> = {},
-		options?: FindOptions<P extends T ? T : P>,
-	): FindCursor<WithId<P>> | FindCursor<WithId<T>> {
+	find(query: Filter<T> = {}, options?: FindOptions<T>): FindCursor<WithId<T>> | FindCursor<ResultFields<T, C>> {
 		const optionsDef = this.doNotMixInclusionAndExclusionFields(options);
 		return this.col.find(query, optionsDef);
 	}
 
-	findPaginated<P extends Document = T>(query: Filter<T>, options?: FindOptions<P extends T ? T : P>): FindPaginated<FindCursor<WithId<P>>>;
+	findPaginated<E extends T>(query: Filter<T>, options?: FindOptions<E>): FindPaginated<FindCursor<E>>;
 
-	findPaginated(query: Filter<T> = {}, options?: any): FindPaginated<FindCursor<WithId<T>>> {
+	findPaginated<
+		E extends FindOptions<T>,
+		K extends E extends { projection: any }
+			? E['projection'] extends { [k: string]: 1 }
+				? PickNested<WithId<T>, '_id' | keyof E['projection']>
+				: OmitNested<WithId<T>, keyof E['projection']>
+			: T,
+	>(query: Filter<T>, options?: E): FindPaginated<FindCursor<K>>;
+
+	findPaginated<P extends Document = T>(query: Filter<T>): FindPaginated<FindCursor<WithId<P>>>;
+
+	findPaginated(query: Filter<T> = {}, options?: FindOptions<T>): FindPaginated<FindCursor<WithId<T>>> {
 		const optionsDef = this.doNotMixInclusionAndExclusionFields(options);
 
 		const cursor = optionsDef ? this.col.find(query, optionsDef) : this.col.find(query);
-		const totalCount = this.col.countDocuments(query);
+		const totalCount = this.countDocuments(query);
 
 		return {
 			cursor,
@@ -423,5 +456,13 @@ export abstract class BaseRaw<
 
 	watch(pipeline?: object[]): ChangeStream<T> {
 		return this.col.watch(pipeline);
+	}
+
+	estimatedDocumentCount(): Promise<number> {
+		return this.col.estimatedDocumentCount();
+	}
+
+	countDocuments(query: Filter<T>): Promise<number> {
+		return this.col.countDocuments(query);
 	}
 }

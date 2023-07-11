@@ -1,5 +1,5 @@
 import type { IStreamer, IStreamerConstructor, IPublication } from 'meteor/rocketchat:streamer';
-import type { ISubscription, IOmnichannelRoom, IUser } from '@rocket.chat/core-typings';
+import { type ISubscription, isOmnichannelRoom } from '@rocket.chat/core-typings';
 import { Rooms, Subscriptions, Users, Settings } from '@rocket.chat/models';
 import { Authorization, VideoConf } from '@rocket.chat/core-services';
 import type { StreamerCallbackArgs, StreamKeys, StreamNames } from '@rocket.chat/ui-contexts';
@@ -165,7 +165,7 @@ export class NotificationsModule {
 				return true;
 			}
 
-			const room = await Rooms.findOneById<Pick<IOmnichannelRoom, 't' | 'v' | '_id'>>(rid, {
+			const room = await Rooms.findOneById(rid, {
 				projection: { 't': 1, 'v.token': 1 },
 			});
 
@@ -176,10 +176,10 @@ export class NotificationsModule {
 			// typing from livechat widget
 			if (extraData?.token) {
 				// TODO improve this to make a query 'v.token'
-				const room = await Rooms.findOneById<Pick<IOmnichannelRoom, 't' | 'v'>>(rid, {
+				const room = await Rooms.findOneById(rid, {
 					projection: { 't': 1, 'v.token': 1 },
 				});
-				return !!room && room.t === 'l' && room.v.token === extraData.token;
+				return !!room && isOmnichannelRoom(room) && room.v.token === extraData.token;
 			}
 
 			if (!this.userId) {
@@ -205,10 +205,10 @@ export class NotificationsModule {
 				// typing from livechat widget
 				if (extraData?.token) {
 					// TODO improve this to make a query 'v.token'
-					const room = await Rooms.findOneById<Pick<IOmnichannelRoom, 't' | 'v'>>(rid, {
+					const room = await Rooms.findOneById(rid, {
 						projection: { 't': 1, 'v.token': 1 },
 					});
-					return !!room && room.t === 'l' && room.v.token === extraData.token;
+					return !!room && isOmnichannelRoom(room) && room.v.token === extraData.token;
 				}
 
 				if (!userId) {
@@ -218,9 +218,10 @@ export class NotificationsModule {
 				// TODO consider using something to cache settings
 				const key = (await Settings.getValueById('UI_Use_Real_Name')) ? 'name' : 'username';
 
-				const user = await Users.findOneById<Pick<IUser, 'name' | 'username'>>(userId, {
+				const user = await Users.findOneById(userId, {
 					projection: {
-						[key]: 1,
+						username: 1,
+						name: 1,
 					},
 				});
 
@@ -258,10 +259,10 @@ export class NotificationsModule {
 		this.streamRoomUsers.allowWrite(async function (eventName, ...args: any[]) {
 			const [roomId, e] = eventName.split('/') as typeof eventName extends `${infer K}/${infer E}` ? [K, E] : never;
 			if (!this.userId) {
-				const room = await Rooms.findOneById<IOmnichannelRoom>(roomId, {
+				const room = await Rooms.findOneById(roomId, {
 					projection: { 't': 1, 'servedBy._id': 1 },
 				});
-				if (room && room.t === 'l' && e === 'webrtc' && room.servedBy) {
+				if (room && isOmnichannelRoom(room) && e === 'webrtc' && room.servedBy) {
 					self.notifyUser(room.servedBy._id, e, ...args);
 					return false;
 				}
@@ -364,8 +365,8 @@ export class NotificationsModule {
 		});
 
 		this.streamLivechatRoom.allowRead(async function (roomId, extraData) {
-			const room = await Rooms.findOneById<Pick<IOmnichannelRoom, 't' | 'v'>>(roomId, {
-				projection: { _id: 0, t: 1, v: 1 },
+			const room = await Rooms.findOneById(roomId, {
+				projection: { t: 1, v: 1 },
 			});
 
 			if (!room) {
@@ -373,7 +374,7 @@ export class NotificationsModule {
 				return false;
 			}
 
-			if (room.t === 'l' && extraData?.visitorToken && room.v.token === extraData.visitorToken) {
+			if (isOmnichannelRoom(room) && extraData?.visitorToken && room.v.token === extraData.visitorToken) {
 				return true;
 			}
 			return false;
@@ -436,10 +437,7 @@ export class NotificationsModule {
 					payload && publication._session.socket?.send(payload);
 				};
 
-				const subscriptions = await Subscriptions.find<Pick<ISubscription, 'rid'>>(
-					{ 'u._id': userId },
-					{ projection: { rid: 1 } },
-				).toArray();
+				const subscriptions = await Subscriptions.find({ 'u._id': userId }, { projection: { rid: 1 } }).toArray();
 
 				subscriptions.forEach(({ rid }) => {
 					streamer.on(rid, roomEvent);

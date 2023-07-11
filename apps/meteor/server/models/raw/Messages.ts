@@ -289,7 +289,7 @@ export class MessagesRaw extends BaseRaw<IMessage> implements IMessagesModel {
 	}
 
 	findLivechatClosingMessage(rid: IRoom['_id'], options?: FindOptions<IMessage>): Promise<IMessage | null> {
-		return this.findOne<IMessage>(
+		return this.findOne(
 			{
 				rid,
 				t: 'livechat-close',
@@ -1397,7 +1397,10 @@ export class MessagesRaw extends BaseRaw<IMessage> implements IMessagesModel {
 		return this.findOne({ 'file._id': fileID });
 	}
 
-	getMessageByFileIdAndUsername(fileID: string, userId: string): Promise<IMessage | null> {
+	getMessageByFileIdAndUsername(
+		fileID: string,
+		userId: string,
+	): Promise<Omit<IMessage, 'unread' | 'mentions' | 'channels' | 'groupable'> | null> {
 		const query = {
 			'file._id': fileID,
 			'u._id': userId,

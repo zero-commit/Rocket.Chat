@@ -1,5 +1,5 @@
 import { TEAM_TYPE } from '@rocket.chat/core-typings';
-import type { IUser, ITeam } from '@rocket.chat/core-typings';
+import type { IUser } from '@rocket.chat/core-typings';
 import { Subscriptions, Rooms, Settings, TeamMember, Team } from '@rocket.chat/models';
 import { Authorization } from '@rocket.chat/core-services';
 import type { RoomAccessValidator } from '@rocket.chat/core-services';
@@ -28,7 +28,7 @@ const roomAccessValidators: RoomAccessValidator[] = [
 		}
 
 		// if team is public, access is allowed if the user can access public rooms
-		const team = await Team.findOneById<Pick<ITeam, 'type'>>(room.teamId, {
+		const team = await Team.findOneById(room.teamId, {
 			projection: { type: 1 },
 		});
 		if (team?.type === TEAM_TYPE.PUBLIC) {

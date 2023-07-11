@@ -29,3 +29,33 @@ export type DeepWritable<T> = T extends (...args: any) => any
 	: {
 			-readonly [P in keyof T]: DeepWritable<T[P]>;
 	  };
+
+type ResultType<T, K> = K extends `${infer H}.${infer R}`
+	? H extends keyof NonNullable<T>
+		? { [P in H]: ResultType<NonNullable<T>[P], R> }
+		: never
+	: K extends keyof NonNullable<T>
+	? T
+	: never;
+
+type ActualPick<T, K> = K extends keyof T ? { [A in K]: T[K] } : K extends `${string}.${string}` ? ResultType<T, K> : never;
+
+type MongoDocument = Record<string, any>;
+
+/*
+ * PickNested<{ a: { b: { c: string } } }, 'a.b.c'> = { a: { b: { c: string } } }
+ * PickNested<{ a: number, b: string }, 'a'> = { a: number }
+ * PickNested<{ a: number, b: string }, 'a' | 'b'> = { a: number } & { b: string }
+ * PickNested<{ a: number, b: { c: string } }, 'a' | 'b.c'> = { a: number } & { b: { c: string } }
+ */
+export type PickNested<T extends MongoDocument, K> = UnionToIntersection<ActualPick<T, K>>;
+
+type Primitive = string | Function | number | boolean | symbol | undefined | null | Date | any[];
+
+export type OmitNested<T, K extends string | number | symbol> = {
+	[P in keyof T as P extends K ? never : P]: T[P] extends infer TP
+		? TP extends Primitive
+			? TP
+			: OmitNested<T[P], K extends `${Exclude<P, symbol>}.${infer R}` ? R : never>
+		: never;
+};

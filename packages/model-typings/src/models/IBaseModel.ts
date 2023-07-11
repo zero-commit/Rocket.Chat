@@ -20,7 +20,7 @@ import type {
 	UpdateResult,
 	WithId,
 } from 'mongodb';
-import type { RocketChatRecordDeleted } from '@rocket.chat/core-typings';
+import type { RocketChatRecordDeleted, PickNested, OmitNested } from '@rocket.chat/core-typings';
 
 export type DefaultFields<Base> = Record<keyof Base, 1> | Record<keyof Base, 0> | void;
 export type ResultFields<Base, Defaults> = Defaults extends void
@@ -49,23 +49,67 @@ export interface IBaseModel<
 
 	findOneAndUpdate(query: Filter<T>, update: UpdateFilter<T> | T, options?: FindOneAndUpdateOptions): Promise<ModifyResult<T>>;
 
-	findOneById(_id: T['_id'], options?: FindOptions<T> | undefined): Promise<T | null>;
-	findOneById<P extends Document = T>(_id: T['_id'], options?: FindOptions<P>): Promise<P | null>;
-	findOneById(_id: T['_id'], options?: any): Promise<T | null>;
+	findOneById<
+		const E extends FindOptions<T>,
+		K extends E extends { projection: any }
+			? E['projection'] extends { [k: string]: 1 }
+				? PickNested<WithId<T>, '_id' | keyof E['projection']>
+				: OmitNested<WithId<T>, keyof E['projection']>
+			: T,
+	>(
+		_id: T['_id'],
+		options?: E,
+	): Promise<K | null>;
+	findOneById<P extends Document = T>(_id: T['_id']): Promise<P | null>;
+	findOneById(_id: T['_id'], options?: FindOptions<T>): Promise<T | null>;
 
-	findOne(query?: Filter<T> | T['_id'], options?: undefined): Promise<T | null>;
-	findOne<P extends Document = T>(query: Filter<T> | T['_id'], options: FindOptions<P extends T ? T : P>): Promise<P | null>;
-	findOne<P>(query: Filter<T> | T['_id'], options?: any): Promise<WithId<T> | WithId<P> | null>;
+	findOne<
+		const E extends FindOptions<T>,
+		K extends E extends { projection: any }
+			? E['projection'] extends { [k: string]: 1 }
+				? PickNested<WithId<T>, '_id' | keyof E['projection']>
+				: OmitNested<WithId<T>, keyof E['projection']>
+			: T,
+	>(
+		_id: T['_id'] | Filter<T>,
+		options?: E,
+	): Promise<K | null>;
+	findOne<P extends Document = T>(query: Filter<T> | T['_id']): Promise<P | null>;
+	findOne(query: Filter<T> | T['_id'], options?: FindOptions<T>): Promise<WithId<T> | null>;
 
+	find<E extends T>(query: Filter<T>, options?: FindOptions<E>): FindCursor<E>;
+
+	find<
+		const E extends FindOptions<T>,
+		K extends E extends { projection: any }
+			? E['projection'] extends { [k: string]: 1 }
+				? PickNested<WithId<T>, '_id' | keyof E['projection']>
+				: OmitNested<WithId<T>, keyof E['projection']>
+			: T,
+	>(
+		query: Filter<T>,
+		options?: E,
+	): FindCursor<K>;
 	find(query?: Filter<T>): FindCursor<ResultFields<T, C>>;
-	find<P extends Document = T>(query: Filter<T>, options: FindOptions<P extends T ? T : P>): FindCursor<P>;
-	find<P extends Document>(
-		query: Filter<T> | undefined,
-		options?: FindOptions<P extends T ? T : P>,
-	): FindCursor<WithId<P>> | FindCursor<WithId<T>>;
+	find<P extends Document = T>(query: Filter<T>): FindCursor<P>;
+	find(query: Filter<T> | undefined, options?: FindOptions<T>): FindCursor<ResultFields<T, C>> | FindCursor<WithId<T>>;
 
-	findPaginated<P extends Document = T>(query: Filter<T>, options?: FindOptions<P extends T ? T : P>): FindPaginated<FindCursor<WithId<P>>>;
-	findPaginated(query: Filter<T>, options?: any): FindPaginated<FindCursor<WithId<T>>>;
+	findPaginated<E extends T>(query: Filter<T>, options?: FindOptions<E>): FindPaginated<FindCursor<E>>;
+
+	findPaginated<
+		const E extends FindOptions<T>,
+		K extends E extends { projection: any }
+			? E['projection'] extends { [k: string]: 1 }
+				? PickNested<WithId<T>, '_id' | keyof E['projection']>
+				: OmitNested<WithId<T>, keyof E['projection']>
+			: T,
+	>(
+		query: Filter<T>,
+		options?: E,
+	): FindPaginated<FindCursor<K>>;
+
+	findPaginated<P extends Document = T>(query: Filter<T>): FindPaginated<FindCursor<WithId<P>>>;
+	findPaginated(query: Filter<T>, options?: FindOptions<T>): FindPaginated<FindCursor<WithId<T>>>;
 
 	update(
 		filter: Filter<T>,
@@ -117,4 +161,6 @@ export interface IBaseModel<
 	): FindPaginated<FindCursor<WithId<TDeleted>>>;
 
 	watch(pipeline?: object[]): ChangeStream<T>;
+	estimatedDocumentCount(): Promise<number>;
+	countDocuments(query: Filter<T>): Promise<number>;
 }

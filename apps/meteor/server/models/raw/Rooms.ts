@@ -801,7 +801,7 @@ export class RoomsRaw extends BaseRaw<IRoom> implements IRoomsModel {
 			uids: { $size: uid.length, $all: uid },
 		};
 
-		return this.findOne<IRoom>(query, options);
+		return this.findOne(query, options);
 	}
 
 	findFederatedRooms(options: FindOptions<IRoom> = {}): FindCursor<IRoomFederated> {
@@ -809,7 +809,7 @@ export class RoomsRaw extends BaseRaw<IRoom> implements IRoomsModel {
 			federated: true,
 		};
 
-		return this.find<IRoomFederated>(query, options);
+		return this.find(query, options) as FindCursor<IRoomFederated>;
 	}
 
 	findCountOfRoomsWithActiveCalls(): Promise<number> {
@@ -1420,7 +1420,9 @@ export class RoomsRaw extends BaseRaw<IRoom> implements IRoomsModel {
 				uids: { $in: uids },
 			},
 			options,
-		);
+		) as unknown as FindCursor<IDirectMessageRoom>;
+		// TODO: `u` is required in IRoom, but IDirectMessageRoom does not have it
+		// Rooms model then is not able to enforce <T extends IRoom> as this type is different to it
 	}
 
 	find1On1ByUserId(userId: IRoom['_id'], options: FindOptions<IRoom> = {}): FindCursor<IRoom> {

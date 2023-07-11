@@ -10,10 +10,7 @@ import type { IBaseModel } from './IBaseModel';
 
 export interface ILivechatInquiryModel extends IBaseModel<ILivechatInquiryRecord> {
 	findOneQueuedByRoomId(rid: string): Promise<(ILivechatInquiryRecord & { status: LivechatInquiryStatus.QUEUED }) | null>;
-	findOneByRoomId<T extends Document = ILivechatInquiryRecord>(
-		rid: string,
-		options: FindOptions<T extends ILivechatInquiryRecord ? ILivechatInquiryRecord : T>,
-	): Promise<T | null>;
+	findOneByRoomId(rid: string, options: FindOptions<ILivechatInquiryRecord>): Promise<ILivechatInquiryRecord | null>;
 	getDistinctQueuedDepartments(options: DistinctOptions): Promise<string[]>;
 	setDepartmentByInquiryId(inquiryId: string, department: string): Promise<ILivechatInquiryRecord | null>;
 	setLastMessageByRoomId(rid: string, message: IMessage): Promise<UpdateResult>;

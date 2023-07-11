@@ -160,7 +160,7 @@ export class Presence extends ServiceClass implements IPresence {
 	async setStatus(uid: string, statusDefault: UserStatus, statusText?: string): Promise<boolean> {
 		const userSessions = (await UsersSessions.findOneById(uid)) || { connections: [] };
 
-		const user = await Users.findOneById<Pick<IUser, 'username' | 'roles' | 'status'>>(uid, {
+		const user = await Users.findOneById(uid, {
 			projection: { username: 1, roles: 1, status: 1 },
 		});
 
@@ -189,7 +189,7 @@ export class Presence extends ServiceClass implements IPresence {
 	}
 
 	async updateUserPresence(uid: string): Promise<void> {
-		const user = await Users.findOneById<Pick<IUser, 'username' | 'statusDefault' | 'statusText' | 'roles' | 'status'>>(uid, {
+		const user = await Users.findOneById(uid, {
 			projection: {
 				username: 1,
 				statusDefault: 1,
