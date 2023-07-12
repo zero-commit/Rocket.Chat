@@ -121,7 +121,7 @@ export const statistics = {
 		statistics.totalThreads = await Messages.countThreads();
 
 		// livechat visitors
-		statistics.totalLivechatVisitors = await LivechatVisitors.col.estimatedDocumentCount();
+		statistics.totalLivechatVisitors = await LivechatVisitors.estimatedDocumentCount();
 
 		// livechat agents
 		statistics.totalLivechatAgents = await Users.countAgents();
@@ -146,7 +146,7 @@ export const statistics = {
 
 		// Number of departments
 		statsPms.push(
-			LivechatDepartment.col.estimatedDocumentCount().then((count) => {
+			LivechatDepartment.estimatedDocumentCount().then((count) => {
 				statistics.departments = count;
 			}),
 		);

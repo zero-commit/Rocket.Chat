@@ -1,4 +1,5 @@
 import { LivechatDepartment } from '@rocket.chat/models';
+import type { ILivechatDepartment } from '@rocket.chat/core-typings';
 
 import { callbacks } from '../../../../../lib/callbacks';
 import { settings } from '../../../../../app/settings/server';
@@ -9,8 +10,11 @@ callbacks.add(
 	async (_: any, { departmentId }: { departmentId?: string } = {}) => {
 		if (departmentId) {
 			const departmentLimit =
-				(await LivechatDepartment.findOneById(departmentId, { projection: { maxNumberSimultaneousChats: 1 } }))
-					?.maxNumberSimultaneousChat || 0;
+				(
+					await LivechatDepartment.findOneById<Pick<ILivechatDepartment, 'maxNumberSimultaneousChat'>>(departmentId, {
+						projection: { maxNumberSimultaneousChats: 1 },
+					})
+				)?.maxNumberSimultaneousChat || 0;
 			if (departmentLimit > 0) {
 				cbLogger.debug(`Applying department filters. Max chats per department ${departmentLimit}`);
 				return { $match: { 'queueInfo.chats': { $gte: Number(departmentLimit) } } };

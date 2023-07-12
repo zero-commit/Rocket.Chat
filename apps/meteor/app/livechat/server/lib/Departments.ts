@@ -1,4 +1,5 @@
 import { LivechatDepartment, LivechatDepartmentAgents, LivechatRooms } from '@rocket.chat/models';
+import type { ILivechatDepartment } from '@rocket.chat/core-typings';
 
 import { callbacks } from '../../../../lib/callbacks';
 import { Logger } from '../../../logger/server';
@@ -9,7 +10,7 @@ class DepartmentHelperClass {
 	async removeDepartment(departmentId: string) {
 		this.logger.debug(`Removing department: ${departmentId}`);
 
-		const department = await LivechatDepartment.findOneById(departmentId, { projection: { _id: 1 } });
+		const department = await LivechatDepartment.findOneById<Pick<ILivechatDepartment, '_id'>>(departmentId, { projection: { _id: 1 } });
 		if (!department) {
 			this.logger.debug(`Department not found: ${departmentId}`);
 			throw new Error('error-department-not-found');

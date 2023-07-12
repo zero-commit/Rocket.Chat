@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { LivechatBusinessHours, LivechatDepartment, Messages, LivechatRooms } from '@rocket.chat/models';
-import type { IOmnichannelRoom, IMessage, IBusinessHourWorkHour } from '@rocket.chat/core-typings';
+import type { IOmnichannelRoom, IMessage, IBusinessHourWorkHour, ILivechatDepartment } from '@rocket.chat/core-typings';
 import { isOmnichannelRoom } from '@rocket.chat/core-typings';
 
 import { settings } from '../../../settings/server';
@@ -28,7 +28,9 @@ const getSecondsSinceLastAgentResponse = async (room: IOmnichannelRoom, agentLas
 	}
 	let officeDays;
 	const department = room.departmentId
-		? await LivechatDepartment.findOneById(room.departmentId, { projection: { businessHourId: 1 } })
+		? await LivechatDepartment.findOneById<Pick<ILivechatDepartment, 'businessHourId'>>(room.departmentId, {
+				projection: { businessHourId: 1 },
+		  })
 		: null;
 	if (department?.businessHourId) {
 		const businessHour = await LivechatBusinessHours.findOneById(department.businessHourId);

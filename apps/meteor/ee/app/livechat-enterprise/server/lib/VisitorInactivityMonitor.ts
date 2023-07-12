@@ -1,4 +1,4 @@
-import type { IOmnichannelRoom, IUser } from '@rocket.chat/core-typings';
+import type { ILivechatDepartment, IOmnichannelRoom, IUser } from '@rocket.chat/core-typings';
 import { LivechatVisitors, LivechatRooms, LivechatDepartment, Users } from '@rocket.chat/models';
 import { OmnichannelEEService } from '@rocket.chat/core-services';
 import { cronJobs } from '@rocket.chat/cron';
@@ -79,7 +79,10 @@ export class VisitorInactivityMonitor {
 			this.logger.debug(`Using cached department abandoned custom message for department ${departmentId}`);
 			return this.messageCache.get('departmentId');
 		}
-		const department = await LivechatDepartment.findOneById(departmentId, { projection: { _id: 1, abandonedRoomsCloseCustomMessage: 1 } });
+		const department = await LivechatDepartment.findOneById<Pick<ILivechatDepartment, '_id' | 'abandonedRoomsCloseCustomMessage'>>(
+			departmentId,
+			{ projection: { _id: 1, abandonedRoomsCloseCustomMessage: 1 } },
+		);
 		if (!department) {
 			this.logger.debug(`Department ${departmentId} not found`);
 			return;
