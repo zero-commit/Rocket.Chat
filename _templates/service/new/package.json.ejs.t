@@ -27,8 +27,10 @@ to: ee/apps/<%= name %>/package.json
 		"@rocket.chat/string-helpers": "0.31.22",
 		"@types/node": "^14.18.21",
 		"ejson": "^2.2.2",
+		"event-loop-stats": "^1.4.1",
 		"eventemitter3": "^4.0.7",
 		"fibers": "^5.0.3",
+		"gc-stats": "^1.4.0",
 		"mem": "^8.1.1",
 		"moleculer": "^0.14.21",
 		"mongodb": "^4.12.1",
@@ -39,6 +41,7 @@ to: ee/apps/<%= name %>/package.json
 	"devDependencies": {
 		"@rocket.chat/eslint-config": "workspace:^",
 		"@types/eslint": "^8.4.10",
+		"@types/gc-stats": "^1",
 		"@types/polka": "^0.5.4",
 		"eslint": "^8.29.0",
 		"ts-node": "^10.9.1",
