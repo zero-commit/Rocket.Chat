@@ -1,3 +1,4 @@
+import type { IUser } from '@rocket.chat/core-typings';
 import { Users } from '@rocket.chat/models';
 import type { ILoginResult } from '@rocket.chat/core-services';
 
@@ -9,7 +10,7 @@ export async function loginViaUsername(
 	password: string,
 	loginExpiration: number,
 ): Promise<false | ILoginResult> {
-	const user = await Users.findOne({ username }, { projection: { 'services.password.bcrypt': 1 } });
+	const user = await Users.findOne<IUser>({ username }, { projection: { 'services.password.bcrypt': 1 } });
 	if (!user) {
 		return false;
 	}

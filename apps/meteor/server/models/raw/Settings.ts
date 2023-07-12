@@ -10,7 +10,7 @@ export class SettingsRaw extends BaseRaw<ISetting> implements ISettingsModel {
 	}
 
 	async getValueById(_id: string): Promise<ISetting['value'] | undefined> {
-		const setting = await this.findOne({ _id }, { projection: { value: 1 } });
+		const setting = await this.findOne<Pick<ISetting, 'value'>>({ _id }, { projection: { value: 1 } });
 
 		return setting?.value;
 	}
@@ -163,7 +163,7 @@ export class SettingsRaw extends BaseRaw<ISetting> implements ISettingsModel {
 				modules: 1,
 				requiredOnWizard: 1,
 			},
-		}) as any;
+		});
 	}
 
 	findSetupWizardSettings(): FindCursor<ISetting> {

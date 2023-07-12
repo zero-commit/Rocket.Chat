@@ -95,14 +95,14 @@ export const statistics = {
 		}
 
 		// User statistics
-		statistics.totalUsers = await Users.countDocuments({});
+		statistics.totalUsers = await Users.col.countDocuments({});
 		statistics.activeUsers = await Users.getActiveLocalUserCount();
 		statistics.activeGuests = await Users.getActiveLocalGuestCount();
-		statistics.nonActiveUsers = await Users.countDocuments({ active: false });
-		statistics.appUsers = await Users.countDocuments({ type: 'app' });
-		statistics.onlineUsers = await Users.countDocuments({ status: UserStatus.ONLINE });
-		statistics.awayUsers = await Users.countDocuments({ status: UserStatus.AWAY });
-		statistics.busyUsers = await Users.countDocuments({ status: UserStatus.BUSY });
+		statistics.nonActiveUsers = await Users.col.countDocuments({ active: false });
+		statistics.appUsers = await Users.col.countDocuments({ type: 'app' });
+		statistics.onlineUsers = await Users.col.countDocuments({ status: UserStatus.ONLINE });
+		statistics.awayUsers = await Users.col.countDocuments({ status: UserStatus.AWAY });
+		statistics.busyUsers = await Users.col.countDocuments({ status: UserStatus.BUSY });
 		statistics.totalConnectedUsers = statistics.onlineUsers + statistics.awayUsers;
 		statistics.offlineUsers = statistics.totalUsers - statistics.onlineUsers - statistics.awayUsers - statistics.busyUsers;
 		statsPms.push(
@@ -112,7 +112,7 @@ export const statistics = {
 		);
 
 		// Room statistics
-		statistics.totalRooms = await Rooms.countDocuments({});
+		statistics.totalRooms = await Rooms.col.countDocuments({});
 		statistics.totalChannels = await Rooms.findByType('c').count();
 		statistics.totalPrivateGroups = await Rooms.findByType('p').count();
 		statistics.totalDirect = await Rooms.findByType('d').count();
@@ -125,7 +125,7 @@ export const statistics = {
 
 		// livechat agents
 		statistics.totalLivechatAgents = await Users.countAgents();
-		statistics.totalLivechatManagers = await Users.countDocuments({ roles: 'livechat-manager' });
+		statistics.totalLivechatManagers = await Users.col.countDocuments({ roles: 'livechat-manager' });
 
 		// livechat enabled
 		statistics.livechatEnabled = settings.get('Livechat_enabled');
@@ -163,14 +163,14 @@ export const statistics = {
 
 		// Number of triggers
 		statsPms.push(
-			LivechatTrigger.estimatedDocumentCount().then((count) => {
+			LivechatTrigger.col.count().then((count) => {
 				statistics.totalTriggers = count;
 			}),
 		);
 
 		// Number of custom fields
 		statsPms.push(
-			LivechatCustomField.estimatedDocumentCount().then((count) => {
+			LivechatCustomField.col.count().then((count) => {
 				statistics.totalCustomFields = count;
 			}),
 		);
@@ -183,13 +183,13 @@ export const statistics = {
 
 		// Number of Email Inboxes
 		statsPms.push(
-			EmailInbox.estimatedDocumentCount().then((count) => {
+			EmailInbox.col.count().then((count) => {
 				statistics.emailInboxes = count;
 			}),
 		);
 
 		statsPms.push(
-			LivechatBusinessHours.estimatedDocumentCount().then((count) => {
+			LivechatBusinessHours.col.count().then((count) => {
 				statistics.BusinessHours = {
 					// Number of Business Hours
 					total: count,
@@ -233,7 +233,7 @@ export const statistics = {
 
 		// Amount of VoIP Extensions connected
 		statsPms.push(
-			Users.countDocuments({ extension: { $exists: true } }).then((count) => {
+			Users.col.countDocuments({ extension: { $exists: true } }).then((count) => {
 				statistics.voipExtensions = count;
 			}),
 		);
@@ -352,7 +352,7 @@ export const statistics = {
 
 		statistics.migration = await getControl();
 		statsPms.push(
-			InstanceStatus.countDocuments({ _updatedAt: { $gt: new Date(Date.now() - process.uptime() * 1000 - 2000) } }).then((count) => {
+			InstanceStatus.col.countDocuments({ _updatedAt: { $gt: new Date(Date.now() - process.uptime() * 1000 - 2000) } }).then((count) => {
 				statistics.instanceCount = count;
 			}),
 		);

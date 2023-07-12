@@ -10,7 +10,7 @@ export class PermissionsRaw extends BaseRaw<IPermission> implements IPermissions
 	}
 
 	async createOrUpdate(name: string, roles: IRole['_id'][]): Promise<IPermission['_id']> {
-		const exists = await this.findOne(
+		const exists = await this.findOne<Pick<IPermission, '_id'>>(
 			{
 				_id: name,
 				roles,
@@ -28,7 +28,7 @@ export class PermissionsRaw extends BaseRaw<IPermission> implements IPermissions
 	}
 
 	async create(id: string, roles: IRole['_id'][]): Promise<IPermission['_id']> {
-		const exists = await this.findOneById(id, { projection: { _id: 1 } });
+		const exists = await this.findOneById<Pick<IPermission, '_id'>>(id, { projection: { _id: 1 } });
 		if (exists) {
 			return exists._id;
 		}

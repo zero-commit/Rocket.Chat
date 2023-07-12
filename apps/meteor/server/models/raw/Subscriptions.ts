@@ -226,9 +226,17 @@ export class SubscriptionsRaw extends BaseRaw<ISubscription> implements ISubscri
 
 	findUsersInRoles(roles: IRole['_id'][], rid: string | undefined, options: FindOptions<IUser>): Promise<FindCursor<IUser>>;
 
-	findUsersInRoles(roles: IRole['_id'][], rid: string | undefined, options: FindOptions<IUser>): Promise<FindCursor<IUser>>;
+	findUsersInRoles<P extends Document = IUser>(
+		roles: IRole['_id'][],
+		rid: string | undefined,
+		options: FindOptions<P extends IUser ? IUser : P>,
+	): Promise<FindCursor<P>>;
 
-	async findUsersInRoles(roles: IRole['_id'][], rid: IRoom['_id'] | undefined, options?: FindOptions<IUser>): Promise<FindCursor<IUser>> {
+	async findUsersInRoles<P extends Document = IUser>(
+		roles: IRole['_id'][],
+		rid: IRoom['_id'] | undefined,
+		options?: FindOptions<P extends IUser ? IUser : P>,
+	): Promise<FindCursor<P>> {
 		const query = {
 			roles: { $in: roles },
 			...(rid && { rid }),
@@ -239,7 +247,7 @@ export class SubscriptionsRaw extends BaseRaw<ISubscription> implements ISubscri
 		const users = compact(subscriptions.map((subscription) => subscription.u?._id).filter(Boolean));
 
 		// TODO remove dependency to other models - this logic should be inside a function/service
-		return Users.find({ _id: { $in: users } }, options || {});
+		return Users.find<P>({ _id: { $in: users } }, options || {});
 	}
 
 	addRolesByUserId(uid: IUser['_id'], roles: IRole['_id'][], rid?: IRoom['_id']): Promise<UpdateResult> {

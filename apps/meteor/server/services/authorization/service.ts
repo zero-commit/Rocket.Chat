@@ -1,5 +1,5 @@
 import mem from 'mem';
-import type { IUser, IRole, IRoom, IRocketChatRecord } from '@rocket.chat/core-typings';
+import type { IUser, IRole, IRoom, ISubscription, IRocketChatRecord } from '@rocket.chat/core-typings';
 import { Subscriptions, Rooms, Users, Roles, Permissions } from '@rocket.chat/models';
 import type { IAuthorization, RoomAccessValidator } from '@rocket.chat/core-services';
 import { License, ServiceClass } from '@rocket.chat/core-services';
@@ -77,7 +77,7 @@ export class Authorization extends ServiceClass implements IAuthorization {
 	}
 
 	async canAccessRoomId(rid: IRoom['_id'], uid: IUser['_id']): Promise<boolean> {
-		const room = await Rooms.findOneById(rid, {
+		const room = await Rooms.findOneById<Pick<IRoom, '_id' | 't' | 'teamId' | 'prid'>>(rid, {
 			projection: {
 				_id: 1,
 				t: 1,
@@ -105,7 +105,10 @@ export class Authorization extends ServiceClass implements IAuthorization {
 
 	private getPublicRoles = mem(
 		async (): Promise<string[]> => {
-			const roles = await Roles.find({ scope: 'Users', description: { $exists: true, $ne: '' } }, { projection: { _id: 1 } }).toArray();
+			const roles = await Roles.find<Pick<IRole, '_id'>>(
+				{ scope: 'Users', description: { $exists: true, $ne: '' } },
+				{ projection: { _id: 1 } },
+			).toArray();
 
 			return roles.map(({ _id }) => _id);
 		},
@@ -146,7 +149,9 @@ export class Authorization extends ServiceClass implements IAuthorization {
 	private async getRoles(uid: string, scope?: IRoom['_id']): Promise<string[]> {
 		const { roles: userRoles = [] } = (await Users.findOneById(uid, { projection: { roles: 1 } })) || {};
 		const { roles: subscriptionsRoles = [] } =
-			(scope && (await Subscriptions.findOne({ 'rid': scope, 'u._id': uid }, { projection: { roles: 1 } }))) || {};
+			(scope &&
+				(await Subscriptions.findOne<Pick<ISubscription, 'roles'>>({ 'rid': scope, 'u._id': uid }, { projection: { roles: 1 } }))) ||
+			{};
 		return [...userRoles, ...subscriptionsRoles].sort((a, b) => a.localeCompare(b));
 	}
 

@@ -69,7 +69,7 @@ export function initWatchers(watcher: DatabaseWatcher, broadcast: BroadcastCallb
 
 	const getUserNameCached = mem(
 		async (userId: string): Promise<string | undefined> => {
-			const user = await Users.findOne(userId, { projection: { name: 1 } });
+			const user = await Users.findOne<Pick<IUser, 'name'>>(userId, { projection: { name: 1 } });
 			return user?.name;
 		},
 		{ maxAge: 10000 },
@@ -122,7 +122,57 @@ export function initWatchers(watcher: DatabaseWatcher, broadcast: BroadcastCallb
 				// Override data cuz we do not publish all fields
 				const subscription =
 					data ||
-					(await Subscriptions.findOneById(id, {
+					(await Subscriptions.findOneById<
+						Pick<
+							ISubscription,
+							| 't'
+							| 'ts'
+							| 'ls'
+							| 'lr'
+							| 'name'
+							| 'fname'
+							| 'rid'
+							| 'code'
+							| 'f'
+							| 'u'
+							| 'open'
+							| 'alert'
+							| 'roles'
+							| 'unread'
+							| 'prid'
+							| 'userMentions'
+							| 'groupMentions'
+							| 'archived'
+							| 'audioNotificationValue'
+							| 'desktopNotifications'
+							| 'mobilePushNotifications'
+							| 'emailNotifications'
+							| 'desktopPrefOrigin'
+							| 'mobilePrefOrigin'
+							| 'emailPrefOrigin'
+							| 'unreadAlert'
+							| '_updatedAt'
+							| 'blocked'
+							| 'blocker'
+							| 'autoTranslate'
+							| 'autoTranslateLanguage'
+							| 'disableNotifications'
+							| 'hideUnreadStatus'
+							| 'hideMentionStatus'
+							| 'muteGroupMentions'
+							| 'ignored'
+							| 'E2EKey'
+							| 'E2ESuggestedKey'
+							| 'tunread'
+							| 'tunreadGroup'
+							| 'tunreadUser'
+
+							// Omnichannel fields
+							| 'department'
+							| 'v'
+							| 'onHold'
+						>
+					>(id, {
 						projection: subscriptionFields,
 					}));
 
@@ -204,7 +254,7 @@ export function initWatchers(watcher: DatabaseWatcher, broadcast: BroadcastCallb
 			return;
 		}
 
-		const data = await LivechatDepartmentAgents.findOneById(id, {
+		const data = await LivechatDepartmentAgents.findOneById<Pick<ILivechatDepartmentAgents, 'agentId' | 'departmentId'>>(id, {
 			projection: { agentId: 1, departmentId: 1 },
 		});
 		if (!data) {
@@ -315,7 +365,7 @@ export function initWatchers(watcher: DatabaseWatcher, broadcast: BroadcastCallb
 	});
 
 	watcher.on<ILoginServiceConfiguration>(LoginServiceConfiguration.getCollectionName(), async ({ clientAction, id }) => {
-		const data = await LoginServiceConfiguration.findOne(id, { projection: { secret: 0 } });
+		const data = await LoginServiceConfiguration.findOne<Omit<ILoginServiceConfiguration, 'secret'>>(id, { projection: { secret: 0 } });
 		if (!data) {
 			return;
 		}
@@ -335,7 +385,7 @@ export function initWatchers(watcher: DatabaseWatcher, broadcast: BroadcastCallb
 	watcher.on<IIntegrationHistory>(IntegrationHistory.getCollectionName(), async ({ clientAction, id, data, diff }) => {
 		switch (clientAction) {
 			case 'updated': {
-				const history = await IntegrationHistory.findOneById(id, {
+				const history = await IntegrationHistory.findOneById<Pick<IIntegrationHistory, 'integration'>>(id, {
 					projection: { 'integration._id': 1 },
 				});
 				if (!history?.integration) {
