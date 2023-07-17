@@ -483,7 +483,7 @@ export class LivechatDepartmentRaw extends BaseRaw<ILivechatDepartment> implemen
 	}
 
 	findByParentId(_parentId: string, _options?: FindOptions<ILivechatDepartment> | undefined): FindCursor<ILivechatDepartment> {
-		throw new Error('Method not implemented.');
+		throw new Error('Method not implemented in CE');
 	}
 }
 
