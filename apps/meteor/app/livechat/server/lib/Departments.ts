@@ -1,4 +1,5 @@
 import { LivechatDepartment, LivechatDepartmentAgents, LivechatRooms } from '@rocket.chat/models';
+import type { ILivechatDepartmentAgents } from '@rocket.chat/core-typings';
 
 import { callbacks } from '../../../../lib/callbacks';
 import { Logger } from '../../../logger/server';
@@ -24,7 +25,7 @@ class DepartmentHelperClass {
 		}
 		this.logger.debug(`Department record removed: ${_id}`);
 
-        const agentsIds: string[] = await LivechatDepartmentAgents.findAgentsByDepartmentId<Pick<ILivechatDepartmentAgents, 'agentId'>>(
+		const agentsIds: string[] = await LivechatDepartmentAgents.findAgentsByDepartmentId<Pick<ILivechatDepartmentAgents, 'agentId'>>(
 			department._id,
 			{ projection: { agentId: 1 } },
 		)
