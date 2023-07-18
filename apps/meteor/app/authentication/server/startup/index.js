@@ -220,9 +220,6 @@ const onCreateUserAsync = async function (options, user = {}) {
 
 	await callbacks.run('onCreateUser', options, user);
 
-	// App IPostUserCreated event hook
-	await Apps.triggerEvent(AppEvents.IPostUserCreated, { user, performedBy: await safeGetMeteorUser() });
-
 	return user;
 };
 
@@ -307,6 +304,11 @@ const insertUserDocAsync = async function (options, user) {
 	}
 
 	await addUserRolesAsync(_id, roles);
+
+	// `post` triggered events don't need to wait for the promise to resolve
+	Apps.triggerEvent(AppEvents.IPostUserCreated, { user, performedBy: await safeGetMeteorUser() }).catch((e) => {
+		Apps.getRocketChatLogger().error('Error while executing post user created event:', e);
+	});
 
 	return _id;
 };
