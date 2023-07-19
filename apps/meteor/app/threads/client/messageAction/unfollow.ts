@@ -17,7 +17,7 @@ Meteor.startup(function () {
 			id: 'unfollow-message',
 			icon: 'bell-off',
 			label: 'Unfollow_message',
-			context: ['message', 'message-mobile', 'threads', 'federated', 'videoconf'],
+			context: ['message', 'message-mobile', 'threads', 'federated', 'videoconf', 'videoconf-threads'],
 			async action(_, { message }) {
 				if (!message) {
 					return;
