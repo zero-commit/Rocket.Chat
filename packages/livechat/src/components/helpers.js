@@ -154,7 +154,8 @@ export const msgTypesNotRendered = [
 
 export const canRenderMessage = ({ t }) => !msgTypesNotRendered.includes(t);
 
-export const canRenderTriggerMessage = (user) => (message) => !!user && message.triggerAfterStartChat;
+export const canRenderTriggerMessage = (user) => (message) =>
+	!message.trigger || (!user && !message.triggerAfterRegistration) || (user && message.triggerAfterRegistration);
 
 export const getAttachmentUrl = (url) => new URL(url, getConnectionBaseUrl()).toString();
 

@@ -127,7 +127,7 @@ class Triggers {
 						ts: ts.toISOString(),
 						_id: createToken(),
 						trigger: true,
-						triggerAfterStartChat: conditions.some((c) => c.name === 'after-starting-chat'),
+						triggerAfterRegistration: conditions.some((c) => c.name === 'after-guest-registration'),
 					};
 
 					await store.setState({
@@ -146,7 +146,7 @@ class Triggers {
 						parentCall('callback', ['assign-agent', normalizeAgent(agent)]);
 					}
 
-					const foundCondition = trigger.conditions.find((c) => c.name === 'chat-opened-by-visitor' || c.name === 'after-starting-chat');
+					const foundCondition = trigger.conditions.find((c) => ['chat-opened-by-visitor', 'after-guest-registration'].includes(c.name));
 					if (!foundCondition) {
 						route('/trigger-messages');
 					}
@@ -186,7 +186,7 @@ class Triggers {
 						}, parseInt(condition.value, 10) * 1000);
 						break;
 					case 'chat-opened-by-visitor':
-					case 'after-starting-chat':
+					case 'after-guest-registration':
 						const openFunc = () => {
 							this.fire(trigger);
 							this.callbacks.off('chat-opened-by-visitor', openFunc);
