@@ -43,7 +43,7 @@ to: ee/apps/<%= name %>/package.json
 		"@types/eslint": "^8.4.10",
 		"@types/gc-stats": "^1",
 		"@types/polka": "^0.5.4",
-		"eslint": "^8.29.0",
+		"eslint": "~8.45.0",
 		"ts-node": "^10.9.1",
 		"typescript": "~4.6.4"
 	},
