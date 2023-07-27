@@ -133,12 +133,22 @@ jobs:
           tar xzf Rocket.Chat.tar.gz
           rm Rocket.Chat.tar.gz
 
+      - name: Build containers
+        if: inputs.release == 'ce'
+        run: |
+          docker compose -f docker-compose-ci.yml build rocketchat
+
       - name: Start containers
         if: inputs.release == 'ce'
         env:
           MONGO_URL: 'mongodb://host.docker.internal:27017/rocketchat?replicaSet=rs0&directConnection=true'
         run: |
           docker compose -f docker-compose-ci.yml up -d --build rocketchat
+
+      - name: Build containers
+        if: inputs.release == 'ee'
+        run: |
+          docker compose -f docker-compose-ci.yml build
 
       - name: Start containers
         if: inputs.release == 'ee'
