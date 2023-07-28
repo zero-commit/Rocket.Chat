@@ -247,6 +247,9 @@ jobs:
     name: 🚢 Build Docker Image
     needs: [build, release-versions]
     runs-on: ubuntu-20.04
+    env:
+      RC_DOCKERFILE: ${{ needs.release-versions.outputs.rc-dockerfile }}
+      RC_DOCKER_TAG: ${{ needs.release-versions.outputs.rc-docker-tag }}
     steps:
       - uses: actions/checkout@v3
       - name: Restore build
